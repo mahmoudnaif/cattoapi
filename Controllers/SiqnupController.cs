@@ -1,6 +1,7 @@
 ﻿using cattoapi.ClientModles;
 using cattoapi.Interfaces;
 using cattoapi.Models;
+using cattoapi.Repos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cattoapi.Controllers
@@ -9,11 +10,11 @@ namespace cattoapi.Controllers
     [ApiController]
     public class SiqnupController : Controller
     {
-        private readonly IAccountRepo accountRepo;
+        private readonly ISiqiningOperationsRepo _siqiningOperationsRepo;
 
-        public SiqnupController(IAccountRepo accountRepo)
+        public SiqnupController(ISiqiningOperationsRepo siqiningOperationsRepo)
         {
-            this.accountRepo = accountRepo;
+            _siqiningOperationsRepo = siqiningOperationsRepo;
         }
 
 
@@ -26,7 +27,7 @@ namespace cattoapi.Controllers
         [ProducesResponseType(200, Type = typeof(SiqnupModel))]
         public async Task<IActionResult> Siqnup([FromBody] SiqnupModel signupModel)
         {
-           bool success = await accountRepo.CreateAccountAsync(signupModel);
+           bool success = await _siqiningOperationsRepo.CreateAccountAsync(signupModel);
             if (!success)
                 return BadRequest(new { error = "something went wrong" });
             

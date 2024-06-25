@@ -12,7 +12,6 @@ namespace cattoapi.Interfaces
 
         public ICollection<Account>? SearchAccounts(string searchQuery, int skip, int take)
             ;
-        public  Task<bool> CreateAccountAsync(SiqnupModel signupModel);
 
     }
 }

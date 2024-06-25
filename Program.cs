@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<PasswordService>();
 
 builder.Services.AddScoped<IAccountRepo, Accountrepo>();
+builder.Services.AddScoped<ISiqiningOperationsRepo, SiqiningOperationsRepo>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
