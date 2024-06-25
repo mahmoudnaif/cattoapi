@@ -11,10 +11,34 @@ namespace cattoapi.Repos
         {
             _context = context;
         }
-
-        public ICollection<Account> GetAccounts()
+        public ICollection<Account>? GetAccounts()
         {
             return _context.Accounts.ToList();
+        }
+
+        public Account? GetAccountByEmail(string email)
+        {
+            return _context.Accounts.SingleOrDefault(acc => acc.Email == email);
+        }
+
+        public Account? GetAccountById(int id)
+        {
+            return _context.Accounts.SingleOrDefault(acc => acc.AccountId == id);
+
+        }
+
+
+        public ICollection<Account>? SearchAccounts(string searchQuery,int take, int skip)
+        {
+
+            
+
+            var searchResult = _context.Accounts.Where(acc => acc.UserName.StartsWith(searchQuery)).Skip(skip).Take(take).ToList();
+
+            if(searchResult.Count == 0)
+                return null;
+
+            return searchResult;
         }
 
     }
