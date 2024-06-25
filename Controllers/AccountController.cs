@@ -12,11 +12,13 @@ namespace cattoapi.Controllers
     public class AccountController : Controller
     {
 
-        private readonly CattoDbContext _context;
+        private readonly IAccountRepo accountRepo;
+        private readonly CattoDbContext context;
 
-        public AccountController(CattoDbContext context)
+        public AccountController(IAccountRepo accountRepo, CattoDbContext context)
         {
-            _context = context;
+            this.accountRepo = accountRepo;
+            this.context = context;
         }
 
 
@@ -24,7 +26,7 @@ namespace cattoapi.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
         public IActionResult GetAccounts() 
         {
-            var accounts = _context.Accounts.Where(p => p.AccountId == 1).Select(p => p.Posts);
+            var accounts = context.Accounts.Where(u => u.AccountId == 1).Select(u => u.LikedPosts).ToList();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

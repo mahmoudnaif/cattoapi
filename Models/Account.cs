@@ -21,7 +21,7 @@ public partial class Account
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Post> PostsNavigation { get; set; } = new List<Post>();
+    public virtual ICollection<LikedPost> LikedPosts { get; set; } = new List<LikedPost>();
 
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 }

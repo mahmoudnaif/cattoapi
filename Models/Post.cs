@@ -17,9 +17,11 @@ public partial class Post
 
     public long AccountId { get; set; }
 
+    public DateTime DateCreated { get; set; }
+
     public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
+    public virtual ICollection<LikedPost> LikedPosts { get; set; } = new List<LikedPost>();
 }

@@ -3,12 +3,8 @@ using System.Collections.Generic;
 
 namespace cattoapi.Models;
 
-public partial class Comment
+public partial class LikedPost
 {
-    public long CommentId { get; set; }
-
-    public string CommentText { get; set; } = null!;
-
     public long AccountId { get; set; }
 
     public long PostId { get; set; }

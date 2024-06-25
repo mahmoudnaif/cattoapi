@@ -19,6 +19,8 @@ public partial class CattoDbContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
 
+    public virtual DbSet<LikedPost> LikedPosts { get; set; }
+
     public virtual DbSet<Post> Posts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -50,24 +52,6 @@ public partial class CattoDbContext : DbContext
             entity.Property(e => e.UserName)
                 .HasMaxLength(255)
                 .HasColumnName("userName");
-
-            entity.HasMany(d => d.Posts).WithMany(p => p.Accounts)
-                .UsingEntity<Dictionary<string, object>>(
-                    "LikedPost",
-                    r => r.HasOne<Post>().WithMany()
-                        .HasForeignKey("PostId")
-                        .HasConstraintName("FK_likedposts_postID"),
-                    l => l.HasOne<Account>().WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_likedposts_accountID"),
-                    j =>
-                    {
-                        j.HasKey("AccountId", "PostId").HasName("PK__Likedpos__4FB7E205A8DF8E01");
-                        j.ToTable("LikedPosts");
-                        j.IndexerProperty<long>("AccountId").HasColumnName("accountID");
-                        j.IndexerProperty<long>("PostId").HasColumnName("postID");
-                    });
         });
 
         modelBuilder.Entity<Comment>(entity =>
@@ -79,6 +63,10 @@ public partial class CattoDbContext : DbContext
             entity.Property(e => e.CommentText)
                 .HasMaxLength(255)
                 .HasColumnName("commentText");
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("dateCreated");
             entity.Property(e => e.PostId).HasColumnName("postID");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Comments)
@@ -91,6 +79,27 @@ public partial class CattoDbContext : DbContext
                 .HasConstraintName("FK_comments_postID");
         });
 
+        modelBuilder.Entity<LikedPost>(entity =>
+        {
+            entity.HasKey(e => new { e.AccountId, e.PostId }).HasName("PK__Likedpos__4FB7E205A8DF8E01");
+
+            entity.Property(e => e.AccountId).HasColumnName("accountID");
+            entity.Property(e => e.PostId).HasColumnName("postID");
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("dateCreated");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.LikedPosts)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_likedposts_accountID");
+
+            entity.HasOne(d => d.Post).WithMany(p => p.LikedPosts)
+                .HasForeignKey(d => d.PostId)
+                .HasConstraintName("FK_likedposts_postID");
+        });
+
         modelBuilder.Entity<Post>(entity =>
         {
             entity.HasKey(e => e.PostId).HasName("PK__posts__DD0C73BAC72F2DD8");
@@ -98,6 +107,10 @@ public partial class CattoDbContext : DbContext
             entity.Property(e => e.PostId).HasColumnName("postID");
             entity.Property(e => e.AccountId).HasColumnName("accountID");
             entity.Property(e => e.CommentsCount).HasColumnName("commentsCount");
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("dateCreated");
             entity.Property(e => e.LikesCount).HasColumnName("likesCount");
             entity.Property(e => e.PostPictrue)
                 .HasMaxLength(255)
@@ -106,7 +119,7 @@ public partial class CattoDbContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("postText");
 
-            entity.HasOne(d => d.Account).WithMany(p => p.PostsNavigation)
+            entity.HasOne(d => d.Account).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("posts_accountID_FK");
         });
