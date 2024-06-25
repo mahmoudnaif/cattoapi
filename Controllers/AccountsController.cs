@@ -2,7 +2,7 @@
 using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.Repos;
-using cattoapi.utils;
+using cattoapi.utlities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cattoapi.Controllers
@@ -58,7 +58,7 @@ namespace cattoapi.Controllers
         [ProducesResponseType(200, Type = typeof(Account))]
         public IActionResult GetAccountByEmail(string email)
         {
-            if(!utils.utils.IsValidEmail(email))
+            if(!utlities.utils.IsValidEmail(email))
                 return BadRequest(new { error = "Invalid email format. Please enter a valid email." });
 
 

@@ -1,4 +1,5 @@
-﻿using cattoapi.Models;
+﻿using cattoapi.ClientModles;
+using cattoapi.Models;
 
 namespace cattoapi.Interfaces
 {
@@ -9,7 +10,9 @@ namespace cattoapi.Interfaces
 
         public Account? GetAccountByEmail(string email);
 
-        public ICollection<Account>? SearchAccounts(string searchQuery, int skip, int take);
+        public ICollection<Account>? SearchAccounts(string searchQuery, int skip, int take)
+            ;
+        public  Task<bool> CreateAccountAsync(SiqnupModel signupModel);
 
     }
 }
