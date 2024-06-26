@@ -36,7 +36,7 @@ namespace cattoapi.Repos
 
             
 
-            var searchResult = _context.Accounts.Where(acc => acc.UserName.StartsWith(searchQuery)).Skip(skip).Take(take).ToList();
+            var searchResult = _context.Accounts.Where(acc => acc.UserName.ToLower().StartsWith(searchQuery.ToLower())).Skip(skip).Take(take).ToList();
 
             if(searchResult.Count == 0)
                 return null;

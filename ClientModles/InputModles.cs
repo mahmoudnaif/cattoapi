@@ -8,9 +8,9 @@
 
     }
 
-    public class loginModel
+    public class Siqninmodel
     {
-        public string email{ get; set; }
+        public string emailOrUserName{ get; set; }
         public string password{ get; set; }
 
     }

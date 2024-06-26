@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cattoapi.Repos
 {
-    public class SiqiningOperationsRepo : ISiqiningOperationsRepo
+    public class AuthOperationsRepo : IAuthOperationsRepo
     {
 
 
         private readonly CattoDbContext _context;
         private readonly PasswordService _passwordService;
 
-        public SiqiningOperationsRepo(CattoDbContext context, PasswordService passwordService)
+        public AuthOperationsRepo(CattoDbContext context, PasswordService passwordService)
         {
             _context = context;
             _passwordService = passwordService;
@@ -22,19 +22,16 @@ namespace cattoapi.Repos
 
 
 
-
-
-
         public async Task<bool> CreateAccountAsync(SiqnupModel siqnupModel)
         {
-            if (!utils.IsValidEmail(siqnupModel.email) ||
+            if (!utlities.utlities.IsValidEmail(siqnupModel.email) ||
                 siqnupModel.password != siqnupModel.repeatPassword)
                 return false;
 
 
 
-            var emailUser = _context.Accounts.SingleOrDefault(acc => acc.Email == siqnupModel.email);
-            var userNameUser = _context.Accounts.SingleOrDefault(acc => acc.UserName == siqnupModel.userName);
+            var emailUser = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == siqnupModel.email.ToLower());
+            var userNameUser = _context.Accounts.SingleOrDefault(acc => acc.UserName.ToLower() == siqnupModel.userName.ToLower());
 
             if (emailUser != null || userNameUser != null)
                 return false;
@@ -70,5 +67,29 @@ namespace cattoapi.Repos
 
         }
 
+
+
+        public Account Signin(Siqninmodel siqninmodel)
+        {
+            Account account = null;
+            
+            if (utlities.utlities.IsValidEmail(siqninmodel.emailOrUserName)) { 
+            account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == siqninmodel.emailOrUserName.ToLower());
+            }
+            else
+            {
+                account = _context.Accounts.SingleOrDefault(acc => acc.UserName == siqninmodel.emailOrUserName);
+            }
+
+            if (account == null || !_passwordService.VerifyPassword(account, siqninmodel.password))
+            {
+                return null;
+            }
+
+            return account;
+
+
+
+        }
     }
 }

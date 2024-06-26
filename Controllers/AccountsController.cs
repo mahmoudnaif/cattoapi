@@ -3,6 +3,7 @@ using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.Repos;
 using cattoapi.utlities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cattoapi.Controllers
@@ -24,6 +25,7 @@ namespace cattoapi.Controllers
 
         [HttpGet()]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
+        [Authorize(Roles = "admin")]
         public IActionResult GetAccounts() 
         {
             var accounts = accountRepo.GetAccounts();
@@ -38,6 +40,8 @@ namespace cattoapi.Controllers
 
         [HttpGet("id/{strId}")]
         [ProducesResponseType(200, Type = typeof(Account))]
+        [Authorize(Roles = "admin")]
+
         public IActionResult GetAccountById(string strId)
         {
             if(!int.TryParse(strId, out int id))
@@ -56,9 +60,11 @@ namespace cattoapi.Controllers
 
         [HttpGet("email/{email}")]
         [ProducesResponseType(200, Type = typeof(Account))]
+        [Authorize(Roles = "admin")]
+
         public IActionResult GetAccountByEmail(string email)
         {
-            if(!utlities.utils.IsValidEmail(email))
+            if(!utlities.utlities.IsValidEmail(email))
                 return BadRequest(new { error = "Invalid email format. Please enter a valid email." });
 
 
@@ -96,9 +102,6 @@ namespace cattoapi.Controllers
 
 
             return Ok(results);
-
-           
-
         }
 
     }

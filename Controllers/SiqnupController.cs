@@ -10,9 +10,9 @@ namespace cattoapi.Controllers
     [ApiController]
     public class SiqnupController : Controller
     {
-        private readonly ISiqiningOperationsRepo _siqiningOperationsRepo;
+        private readonly IAuthOperationsRepo _siqiningOperationsRepo;
 
-        public SiqnupController(ISiqiningOperationsRepo siqiningOperationsRepo)
+        public SiqnupController(IAuthOperationsRepo siqiningOperationsRepo)
         {
             _siqiningOperationsRepo = siqiningOperationsRepo;
         }
@@ -24,7 +24,7 @@ namespace cattoapi.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(200, Type = typeof(SiqnupModel))]
+        [ProducesResponseType(201, Type = typeof(bool))]
         public async Task<IActionResult> Siqnup([FromBody] SiqnupModel signupModel)
         {
            bool success = await _siqiningOperationsRepo.CreateAccountAsync(signupModel);
@@ -33,7 +33,7 @@ namespace cattoapi.Controllers
             
             
 
-            return Ok(success);
+            return CreatedAtAction(null,new { success = "true" });
 
         }
 
