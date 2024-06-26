@@ -24,7 +24,7 @@ namespace cattoapi.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(string))]
+        [ProducesResponseType(201)]
         public IActionResult Login([FromBody] Siqninmodel siqninmodel)
         {
             Account account= _siqiningOperationsRepo.Signin(siqninmodel);

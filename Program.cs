@@ -36,6 +36,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddTransient<PasswordService>();
 
+builder.Services.AddScoped<IUserOperationsRepo, UserOperationsRepo>();
 builder.Services.AddScoped<IAdminOperationsRepo, AdminOperationsRepo>();
 builder.Services.AddScoped<IAccountRepo, Accountrepo>();
 builder.Services.AddScoped<IAuthOperationsRepo, AuthOperationsRepo>();
