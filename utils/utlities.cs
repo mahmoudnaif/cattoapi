@@ -1,5 +1,6 @@
 ﻿using cattoapi.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -39,6 +40,45 @@ namespace cattoapi.utlities
            signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+
+        public static bool IsImage(IFormFile file)
+        {
+
+            string[] allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".bmp" };
+
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        public static async Task<byte[]> ConvertToByteArray(IFormFile file)
+        {
+          
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+
+                    byte[] fileBytes = memoryStream.ToArray();
+
+
+                    return fileBytes;
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                return [];
+            }
         }
 
 

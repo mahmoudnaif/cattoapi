@@ -1,4 +1,5 @@
-﻿using cattoapi.Interfaces;
+﻿using cattoapi.ClientModles;
+using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.Repos;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +44,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("ChangePassword")]
         [Authorize]
-        public IActionResult ChangePassword([FromBody] string newPassword) {
+        public IActionResult ChangePassword([FromBody] ChangePasswordModel changePasswordModel) {
             int id;
             try
             {
@@ -53,7 +54,7 @@ namespace cattoapi.Controllers
             {
                 return BadRequest();
             }
-            bool success = _userOperationsRepo.ChangePassword(id, newPassword);
+            bool success = _userOperationsRepo.ChangePassword(id, changePasswordModel.oldPassword, changePasswordModel.newPassword);
 
             if (!success)
                 return BadRequest();
@@ -62,9 +63,9 @@ namespace cattoapi.Controllers
         }
 
 
-        [HttpPut("ChangePFp")]
+        [HttpPut("ChangePFP")]
         [Authorize]
-        public IActionResult ChangePFp([FromBody] IFormFile pfp)
+        public async Task<IActionResult> ChangePFP(IFormFile pfp)
         {
             int id;
             try
@@ -76,7 +77,7 @@ namespace cattoapi.Controllers
                 return BadRequest();
             }
 
-            bool success = _userOperationsRepo.Changepfp(id, pfp);
+            bool success = await _userOperationsRepo.Changepfp(id, pfp);
 
             if (!success)
                 return BadRequest();

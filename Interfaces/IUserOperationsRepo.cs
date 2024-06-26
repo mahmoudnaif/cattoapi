@@ -6,9 +6,9 @@ namespace cattoapi.Interfaces
     {
         public Account GetData(int accountId);
 
-        public bool ChangePassword(int accountId, string newPassword);
+        public bool ChangePassword(int accountId, string oldPassword, string newPassword);
 
-        public bool Changepfp(int accountId, IFormFile pfp);
+        public Task<bool> Changepfp(int accountId, IFormFile pfp);
 
     }
 }

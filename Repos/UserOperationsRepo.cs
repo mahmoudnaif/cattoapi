@@ -27,13 +27,16 @@ namespace cattoapi.Repos
 
             return account;
         }
-        public bool ChangePassword(int accountId,string newPassword)
+        public bool ChangePassword(int accountId,string oldPassword, string newPassword)
         {
             Account account = _context.Accounts.SingleOrDefault(acc => acc.AccountId== accountId);
 
             if (account == null)
                 return false;
 
+            if (!_passwordService.VerifyPassword(account, oldPassword))
+                return false;
+            
 
             account.Password = _passwordService.HashPassword(account, newPassword);
             try
@@ -46,10 +49,39 @@ namespace cattoapi.Repos
                 return false;
             }
         }
-        public bool Changepfp(int accountId, IFormFile pfp)
+        public async Task<bool> Changepfp(int accountId, IFormFile pfp)
         {
-            throw new NotImplementedException();
+            bool isImage = Utlities.IsImage(pfp);
+
+            if (!isImage)
+                return false;
+
+            Account account = _context.Accounts.SingleOrDefault(acc => acc.AccountId == accountId);
+
+            if(account == null)
+                return false;
+
+            try
+            {
+                account.Pfp = await Utlities.ConvertToByteArray(pfp);
+                Console.WriteLine(account.Pfp);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+            
+
+            
+            
+
+            
+
         }
+
 
         
     }
