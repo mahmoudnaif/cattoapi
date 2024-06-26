@@ -18,8 +18,7 @@ namespace cattoapi.Repos
 
         public bool ChangeEmail(string email, string newEmail)
         {
-            if (!utlities.utlities.IsValidEmail(email)) 
-                return false;
+           
             
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
@@ -27,6 +26,11 @@ namespace cattoapi.Repos
             if (account == null)
                 return false;
 
+
+            Account emailExists = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == newEmail.ToLower());
+
+            if (emailExists != null)
+                return false;
 
             account.Email = newEmail;
             try
@@ -44,8 +48,7 @@ namespace cattoapi.Repos
 
         public bool ChangePassword(string email, string newPassword)
         {
-            if (!utlities.utlities.IsValidEmail(email))
-                return false;
+           
 
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
@@ -69,9 +72,7 @@ namespace cattoapi.Repos
 
         public bool ChangeRole(string email, string Newrole)
         {
-            if (!utlities.utlities.IsValidEmail(email))
-                return false;
-
+           
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
 
@@ -93,8 +94,7 @@ namespace cattoapi.Repos
 
         public bool ChangeUserName(string email, string newUserName)
         {
-            if (!utlities.utlities.IsValidEmail(email))
-                return false;
+           
 
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
@@ -102,9 +102,9 @@ namespace cattoapi.Repos
             if (account == null)
                 return false;
 
-            Account usernameexists = _context.Accounts.SingleOrDefault(acc => acc.UserName.ToLower() == newUserName.ToLower());
+            Account usernameExists = _context.Accounts.SingleOrDefault(acc => acc.UserName.ToLower() == newUserName.ToLower());
 
-            if (usernameexists != null)
+            if (usernameExists != null)
                 return false;
 
             account.UserName = newUserName;
@@ -122,8 +122,7 @@ namespace cattoapi.Repos
 
         public bool DeleteAccount(string email)
         {
-            if (!utlities.utlities.IsValidEmail(email))
-                return false;
+           
 
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
@@ -147,8 +146,7 @@ namespace cattoapi.Repos
 
         public bool RemovePFP(string email)
         {
-            if (!utlities.utlities.IsValidEmail(email))
-                return false;
+           
 
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
@@ -171,15 +169,13 @@ namespace cattoapi.Repos
 
         public bool VerifyAccount(string email)
         {
-            if (!utlities.utlities.IsValidEmail(email))
-                return false;
-
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == email.ToLower());
 
             if (account == null)
                 return false;
 
+            account.Verified = true;
 
             
             try
@@ -193,4 +189,7 @@ namespace cattoapi.Repos
             }
         }
     }
+
+
+
 }

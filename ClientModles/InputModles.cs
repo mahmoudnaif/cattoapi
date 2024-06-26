@@ -27,4 +27,17 @@
         public string repeatPassword { get; set; }
 
     }
+
+    public class AdminChangeModel
+    {
+
+        public string email { get; set; }
+
+        public string probertyChange { get; set; } = "";
+
+    }
+
+
+
+
 }

@@ -19,6 +19,8 @@ public partial class Account
 
     public string Role { get; set; } = null!;
 
+    public bool Verified { get; set; }
+
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<LikedPost> LikedPosts { get; set; } = new List<LikedPost>();

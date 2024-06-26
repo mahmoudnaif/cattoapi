@@ -9,12 +9,12 @@ namespace cattoapi.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class logincontroller : Controller
+    public class loginController : Controller
     {
         private readonly IAuthOperationsRepo _siqiningOperationsRepo;
         private readonly IConfiguration _configuration;
 
-        public logincontroller(IAuthOperationsRepo siqiningOperationsRepo,IConfiguration configuration)
+        public loginController(IAuthOperationsRepo siqiningOperationsRepo,IConfiguration configuration)
         {
             _siqiningOperationsRepo = siqiningOperationsRepo;
             _configuration = configuration;
@@ -32,7 +32,7 @@ namespace cattoapi.Controllers
             if (account == null)
                 return Unauthorized(new { error = "invalid data"});
 
-          string JWTToken = utlities.utlities.generateLoginJWT((int)account.AccountId, account.Role, _configuration["Jwt:Key"]);
+          string JWTToken = utlities.Utlities.generateLoginJWT((int)account.AccountId, account.Role, _configuration["Jwt:Key"]);
 
 
             return CreatedAtAction(null,new {token = JWTToken});

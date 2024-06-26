@@ -64,7 +64,7 @@ namespace cattoapi.Controllers
 
         public IActionResult GetAccountByEmail(string email)
         {
-            if(!utlities.utlities.IsValidEmail(email))
+            if(!utlities.Utlities.IsValidEmail(email))
                 return BadRequest(new { error = "Invalid email format. Please enter a valid email." });
 
 

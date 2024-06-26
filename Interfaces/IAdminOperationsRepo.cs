@@ -2,21 +2,21 @@
 {
     public interface IAdminOperationsRepo
     {
-        public bool ChangePassword(string idOrEmail,string newPassword);
+        public bool ChangePassword(string email,string newPassword);
 
-        public bool ChangeEmail(string idOrEmail, string newEmail);
+        public bool ChangeEmail(string email, string newEmail);
 
-        public bool ChangeUserName(string idOrEmail, string newUserName);
-
-
-        public bool ChangeRole(string idOrEmail, string Newrole);
-
-        public bool DeleteAccount(string idOrEmail);
+        public bool ChangeUserName(string email, string newUserName);
 
 
-        public bool VerifyAccount(string idOrEmail);
+        public bool ChangeRole(string email, string Newrole);
 
-        public bool RemovePFP(string idOrEmail);
+        public bool DeleteAccount(string email);
+
+
+        public bool VerifyAccount(string email);
+
+        public bool RemovePFP(string email);
 
     }
 }

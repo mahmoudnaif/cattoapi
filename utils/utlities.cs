@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace cattoapi.utlities
 {
-    public static class utlities
+    public static class Utlities
     {
 
         public static bool IsValidEmail(string email)

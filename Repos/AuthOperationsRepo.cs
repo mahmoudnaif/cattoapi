@@ -24,7 +24,7 @@ namespace cattoapi.Repos
 
         public async Task<bool> CreateAccountAsync(SiqnupModel siqnupModel)
         {
-            if (!utlities.utlities.IsValidEmail(siqnupModel.email) ||
+            if (!utlities.Utlities.IsValidEmail(siqnupModel.email) ||
                 siqnupModel.password != siqnupModel.repeatPassword)
                 return false;
 
@@ -73,7 +73,7 @@ namespace cattoapi.Repos
         {
             Account account = null;
             
-            if (utlities.utlities.IsValidEmail(siqninmodel.emailOrUserName)) { 
+            if (utlities.Utlities.IsValidEmail(siqninmodel.emailOrUserName)) { 
             account = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == siqninmodel.emailOrUserName.ToLower());
             }
             else
