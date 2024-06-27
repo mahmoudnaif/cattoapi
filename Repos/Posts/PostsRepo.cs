@@ -75,9 +75,9 @@ namespace cattoapi.Repos.Posts
                 _context.SaveChanges();
                 return new CustomResponse<PostDTO>(201, "Post created sucessfully", _mapper.Map<PostDTO>(post));
             }
-            catch(Exception ex)
+            catch
             {
-                return new CustomResponse<PostDTO>(500, ex.Message);
+                return new CustomResponse<PostDTO>(500, "Something went wrong");
             }
 
             
