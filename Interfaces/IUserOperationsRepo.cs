@@ -1,14 +1,16 @@
-﻿using cattoapi.Models;
+﻿using cattoapi.customResponse;
+using cattoapi.DTOS;
+using cattoapi.Models;
 
 namespace cattoapi.Interfaces
 {
     public interface IUserOperationsRepo
     {
-        public Account GetData(int accountId);
+        public CustomResponse<AccountDTO> GetData(int accountId);
 
-        public bool ChangePassword(int accountId, string oldPassword, string newPassword);
+        public CustomResponse<bool> ChangePassword(int accountId, string oldPassword, string newPassword);
 
-        public Task<bool> Changepfp(int accountId, IFormFile pfp);
+        public Task<CustomResponse<bool>> Changepfp(int accountId, IFormFile pfp);
 
     }
 }

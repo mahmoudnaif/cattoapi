@@ -1,22 +1,25 @@
-﻿namespace cattoapi.Interfaces
+﻿using cattoapi.ClientModles;
+using cattoapi.customResponse;
+
+namespace cattoapi.Interfaces
 {
     public interface IAdminOperationsRepo
     {
-        public bool ChangePassword(string email,string newPassword);
+        public CustomResponse<bool> ChangePassword(AdminChangeModel adminChangeModel);
 
-        public bool ChangeEmail(string email, string newEmail);
+        public CustomResponse<bool> ChangeEmail(AdminChangeModel adminChangeModel);
 
-        public bool ChangeUserName(string email, string newUserName);
-
-
-        public bool ChangeRole(string email, string Newrole);
-
-        public bool DeleteAccount(string email);
+        public CustomResponse<bool> ChangeUserName(AdminChangeModel adminChangeModel);
 
 
-        public bool VerifyAccount(string email);
+        public CustomResponse<bool> ChangeRole(AdminChangeModel adminChangeModel);
 
-        public bool RemovePFP(string email);
+        public CustomResponse<bool> DeleteAccount(string email);
+
+
+        public CustomResponse<bool> VerifyAccount(string email);
+
+        public CustomResponse<bool> RemovePFP(string email);
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using cattoapi.ClientModles;
+using cattoapi.customResponse;
 using cattoapi.Interfaces;
 using cattoapi.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -27,15 +28,11 @@ namespace cattoapi.Controllers
         [ProducesResponseType(201)]
         public IActionResult Login([FromBody] Siqninmodel siqninmodel)
         {
-            Account account= _siqiningOperationsRepo.Signin(siqninmodel);
+            CustomResponse<Object> customResponse = _siqiningOperationsRepo.Signin(siqninmodel);
 
-            if (account == null)
-                return Unauthorized(new { error = "invalid data"});
+      
 
-          string JWTToken = utlities.Utlities.generateLoginJWT((int)account.AccountId, account.Role, _configuration["Jwt:Key"]);
-
-
-            return CreatedAtAction(null,new {token = JWTToken});
+            return StatusCode(customResponse.responseCode, customResponse);
 
         }
 

@@ -1,4 +1,5 @@
 ﻿using cattoapi.ClientModles;
+using cattoapi.customResponse;
 using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.utlities;
@@ -12,29 +13,38 @@ namespace cattoapi.Repos
 
         private readonly CattoDbContext _context;
         private readonly PasswordService _passwordService;
+        private readonly IConfiguration _configuration;
 
-        public AuthOperationsRepo(CattoDbContext context, PasswordService passwordService)
+        public AuthOperationsRepo(CattoDbContext context, PasswordService passwordService,IConfiguration configuration)
         {
             _context = context;
             _passwordService = passwordService;
+            _configuration = configuration;
         }
 
 
 
 
-        public async Task<bool> CreateAccountAsync(SiqnupModel siqnupModel)
+        public async Task<CustomResponse<bool>> CreateAccountAsync(SiqnupModel siqnupModel)
         {
-            if (!utlities.Utlities.IsValidEmail(siqnupModel.email) ||
-                siqnupModel.password != siqnupModel.repeatPassword)
-                return false;
+            if (!utlities.Utlities.IsValidEmail(siqnupModel.email))
+                return new CustomResponse<bool>(400, "Invalid email");
+
+            //Implment Regex for UserName and Password
+
+
+            if (siqnupModel.password != siqnupModel.repeatPassword)
+                 return new CustomResponse<bool>(400, "Passwords don't match");
 
 
 
             var emailUser = _context.Accounts.SingleOrDefault(acc => acc.Email.ToLower() == siqnupModel.email.ToLower());
-            var userNameUser = _context.Accounts.SingleOrDefault(acc => acc.UserName.ToLower() == siqnupModel.userName.ToLower());
+            if (emailUser != null)
+                return new CustomResponse<bool>(409, "Email already exists");
 
-            if (emailUser != null || userNameUser != null)
-                return false;
+            var userNameUser = _context.Accounts.SingleOrDefault(acc => acc.UserName.ToLower() == siqnupModel.userName.ToLower());
+               if(userNameUser != null)
+                return new CustomResponse<bool>(409, "UserName already exists");
 
 
             Account account = new Account();
@@ -50,15 +60,16 @@ namespace cattoapi.Repos
             {
                 _context.Accounts.Add(account);
                 await _context.SaveChangesAsync();
+                return new CustomResponse<bool>(201, "Account Created Successfully");
             }
             catch
             {
-                return false;
+                return new CustomResponse<bool>(500, "Something went wrong! Please try again later"); ;
             }
 
 
 
-            return true;
+            
 
 
 
@@ -69,7 +80,7 @@ namespace cattoapi.Repos
 
 
 
-        public Account Signin(Siqninmodel siqninmodel)
+        public CustomResponse<Object> Signin(Siqninmodel siqninmodel)
         {
             Account account = null;
             
@@ -81,12 +92,19 @@ namespace cattoapi.Repos
                 account = _context.Accounts.SingleOrDefault(acc => acc.UserName == siqninmodel.emailOrUserName);
             }
 
-            if (account == null || !_passwordService.VerifyPassword(account, siqninmodel.password))
+            if (account == null)
             {
-                return null;
+                return new CustomResponse<Object>(404,"Account was not found");
             }
 
-            return account;
+            if (!_passwordService.VerifyPassword(account, siqninmodel.password))
+                return new CustomResponse<Object>(401, "Check your password");
+
+            string JWTToken = Utlities.generateLoginJWT((int)account.AccountId, account.Role, _configuration["Jwt:Key"]);
+
+
+
+            return new CustomResponse<Object>(201, "Logged in successfully", new {Token = JWTToken });
 
 
 

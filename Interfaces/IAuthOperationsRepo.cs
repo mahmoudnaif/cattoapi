@@ -1,13 +1,13 @@
 ﻿using cattoapi.ClientModles;
-using cattoapi.Models;
+using cattoapi.customResponse;
 
 namespace cattoapi.Interfaces
 {
     public interface IAuthOperationsRepo
     {
-        public Task<bool> CreateAccountAsync(SiqnupModel siqnupModel);
+        public Task<CustomResponse<bool>> CreateAccountAsync(SiqnupModel siqnupModel);
 
-        public Account Signin(Siqninmodel siqninmodel);
+        public CustomResponse<Object> Signin(Siqninmodel siqninmodel);
 
     }
 }

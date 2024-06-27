@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using cattoapi.ClientModles;
+using cattoapi.customResponse;
 using cattoapi.DTOS;
 using cattoapi.Interfaces;
 using cattoapi.Models;
@@ -33,16 +34,13 @@ namespace cattoapi.Controllers
             }
             catch
             {
-                return BadRequest();
+                return StatusCode(400, new CustomResponse<AccountDTO>(400,"the sent token doesn't include the account id"));
+
             }
-            Account account= _userOperationsRepo.GetData(id);
+            CustomResponse<AccountDTO> customResponse= _userOperationsRepo.GetData(id);
 
 
-            if (account == null)
-                return NotFound("wtf man how did that even happen... wrong Id in a JTW?! I'm afed");
-
-            var accountDTO = _mapper.Map<AccountDTO>(account);
-            return Ok(accountDTO);
+            return StatusCode(customResponse.responseCode, customResponse);
 
         }
 
@@ -56,14 +54,14 @@ namespace cattoapi.Controllers
             }
             catch
             {
-                return BadRequest();
+                return StatusCode(400, new CustomResponse<AccountDTO>(400, "the sent token doesn't include the account id"));
             }
-            bool success = _userOperationsRepo.ChangePassword(id, changePasswordModel.oldPassword, changePasswordModel.newPassword);
 
-            if (!success)
-                return BadRequest();
+            CustomResponse<bool> customResponse = _userOperationsRepo.ChangePassword(id, changePasswordModel.oldPassword, changePasswordModel.newPassword);
 
-            return Ok();
+            
+
+            return StatusCode(customResponse.responseCode,customResponse);
         }
 
 
@@ -78,15 +76,14 @@ namespace cattoapi.Controllers
             }
             catch
             {
-                return BadRequest();
+                return StatusCode(400, new CustomResponse<AccountDTO>(400, "the sent token doesn't include the account id"));
             }
 
-            bool success = await _userOperationsRepo.Changepfp(id, pfp);
+            CustomResponse<bool> customResponse = await _userOperationsRepo.Changepfp(id, pfp);
 
-            if (!success)
-                return BadRequest();
+           
 
-            return Ok();
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 

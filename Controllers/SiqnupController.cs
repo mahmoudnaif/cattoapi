@@ -1,4 +1,5 @@
 ﻿using cattoapi.ClientModles;
+using cattoapi.customResponse;
 using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.Repos;
@@ -18,22 +19,20 @@ namespace cattoapi.Controllers
         }
 
 
-     
+
 
 
 
 
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(bool))]
+        [ProducesResponseType(201)]
         public async Task<IActionResult> Siqnup([FromBody] SiqnupModel signupModel)
         {
-           bool success = await _siqiningOperationsRepo.CreateAccountAsync(signupModel);
-            if (!success)
-                return BadRequest(new { error = "something went wrong" });
-            
-            
+          CustomResponse<bool> customResponse= await _siqiningOperationsRepo.CreateAccountAsync(signupModel);
+          
+           
 
-            return CreatedAtAction(null,new { success = "true" });
+            return StatusCode(customResponse.responseCode, customResponse);
 
         }
 

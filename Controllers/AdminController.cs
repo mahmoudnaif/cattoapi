@@ -1,4 +1,5 @@
 ﻿using cattoapi.ClientModles;
+using cattoapi.customResponse;
 using cattoapi.Interfaces;
 using cattoapi.utlities;
 using Microsoft.AspNetCore.Authorization;
@@ -23,15 +24,12 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult ChangePassword([FromBody] AdminChangeModel adminChangeModel)
         {
-            if (adminChangeModel == null || !Utlities.IsValidEmail(adminChangeModel.email)
-                || adminChangeModel.probertyChange == "")
-                return BadRequest(new {error = "body is invalid"});
+           
 
-            bool success = adminOperationsRepo.ChangePassword(adminChangeModel.email, adminChangeModel.probertyChange);
-            if(!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
+            CustomResponse<bool> customResponse = adminOperationsRepo.ChangePassword(adminChangeModel);
 
-            return Ok();
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 
@@ -40,15 +38,13 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult ChangeEmail([FromBody] AdminChangeModel adminChangeModel)
         {
-            if (adminChangeModel == null || !Utlities.IsValidEmail(adminChangeModel.email)
-                || !Utlities.IsValidEmail(adminChangeModel.probertyChange))
-                return BadRequest(new { error = "body is invalid" });
+          
 
-            bool success = adminOperationsRepo.ChangeEmail(adminChangeModel.email, adminChangeModel.probertyChange);
-            if (!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
 
-            return Ok();
+            CustomResponse<bool> customResponse = adminOperationsRepo.ChangeEmail(adminChangeModel);
+
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 
@@ -58,15 +54,13 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult ChangeUserName([FromBody] AdminChangeModel adminChangeModel)
         {
-            if (adminChangeModel == null || !Utlities.IsValidEmail(adminChangeModel.email)
-                || adminChangeModel.probertyChange == "")
-                return BadRequest(new { error = "body is invalid" });
 
-            bool success = adminOperationsRepo.ChangeUserName(adminChangeModel.email, adminChangeModel.probertyChange);
-            if (!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
 
-            return Ok();
+
+            CustomResponse<bool> customResponse = adminOperationsRepo.ChangeUserName(adminChangeModel);
+
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 
@@ -75,15 +69,12 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult ChangeRole([FromBody] AdminChangeModel adminChangeModel)
         {
-            if (adminChangeModel == null || !Utlities.IsValidEmail(adminChangeModel.email)
-                || adminChangeModel.probertyChange == "")
-                return BadRequest(new { error = "body is invalid" });
 
-            bool success = adminOperationsRepo.ChangeRole(adminChangeModel.email, adminChangeModel.probertyChange);
-            if (!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
 
-            return Ok();
+
+            CustomResponse<bool> customResponse = adminOperationsRepo.ChangeRole(adminChangeModel);
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 
@@ -93,14 +84,13 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult VerifyAccount([FromBody] string email)
         {
-            if (!Utlities.IsValidEmail(email))
-                return BadRequest(new { error = "body is invalid" });
 
-            bool success = adminOperationsRepo.VerifyAccount(email);
-            if (!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
 
-            return Ok();
+
+            CustomResponse<bool> customResponse = adminOperationsRepo.VerifyAccount(email);
+
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 
@@ -110,14 +100,13 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult RemovePFP([FromBody] string email)
         {
-            if (!Utlities.IsValidEmail(email))
-                return BadRequest(new { error = "body is invalid" });
 
-            bool success = adminOperationsRepo.RemovePFP(email);
-            if (!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
 
-            return NoContent();
+
+            CustomResponse<bool> customResponse = adminOperationsRepo.RemovePFP(email);
+
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
 
@@ -126,14 +115,12 @@ namespace cattoapi.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult DeleteAccount([FromBody] string email)
         {
-            if (!Utlities.IsValidEmail(email))
-                return BadRequest(new { error = "body is invalid" });
 
-            bool success = adminOperationsRepo.DeleteAccount(email);
-            if (!success)
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
 
-            return NoContent();
+
+            CustomResponse<bool> customResponse = adminOperationsRepo.DeleteAccount(email);
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
 
     
