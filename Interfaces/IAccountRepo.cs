@@ -1,16 +1,18 @@
 ﻿using cattoapi.ClientModles;
+using cattoapi.customResponse;
+using cattoapi.DTOS;
 using cattoapi.Models;
 
 namespace cattoapi.Interfaces
 {
     public interface IAccountRepo
     {
-        public ICollection<Account>? GetAccounts();
-        public Account? GetAccountById(int id);
+        public CustomResponse<IEnumerable<AccountDTO>> GetAccounts();
+        public CustomResponse<AccountDTO> GetAccountById(string strId);
 
-        public Account? GetAccountByEmail(string email);
+        public CustomResponse<AccountDTO> GetAccountByEmail(string email);
 
-        public ICollection<Account>? SearchAccounts(string searchQuery, int skip, int take)
+        public CustomResponse<IEnumerable<AccountDTO>> SearchAccounts(string searchQuery, int skip, int take)
             ;
 
     }
