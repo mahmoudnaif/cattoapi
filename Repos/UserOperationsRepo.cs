@@ -59,7 +59,7 @@ namespace cattoapi.Repos
                 return new CustomResponse<bool>(500, "Something went wrong try again later");
             }
         }
-        public async Task<CustomResponse<bool>> Changepfp(int accountId, IFormFile pfp)
+        public async Task<CustomResponse<bool>> Changepfp(int accountId, string pfp)
         {
             bool isImage = Utlities.IsImage(pfp);
 
@@ -73,7 +73,7 @@ namespace cattoapi.Repos
 
             try
             {
-                account.Pfp = await Utlities.ConvertToByteArray(pfp);
+                account.Pfp =  Utlities.ConvertToByteArray(pfp);
                 Console.WriteLine(account.Pfp);
                 _context.SaveChanges();
                 return new CustomResponse<bool>(200, "Profile picture was set successfully");

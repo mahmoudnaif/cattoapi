@@ -10,7 +10,7 @@ namespace cattoapi.Interfaces
 
         public CustomResponse<bool> ChangePassword(int accountId, string oldPassword, string newPassword);
 
-        public Task<CustomResponse<bool>> Changepfp(int accountId, IFormFile pfp);
+        public Task<CustomResponse<bool>> Changepfp(int accountId, string pfp);
 
     }
 }

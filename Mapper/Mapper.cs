@@ -9,6 +9,7 @@
         public MappingProfile()
         {
             CreateMap<Account, AccountDTO> ();
+            CreateMap<Post, PostDTO> ();
         }
     }
 

@@ -13,12 +13,12 @@ namespace cattoapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : Controller
+    public class UserController : Controller
     {
         private readonly IUserOperationsRepo _userOperationsRepo;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserOperationsRepo userOperationsRepo, IMapper mapper) {
+        public UserController(IUserOperationsRepo userOperationsRepo, IMapper mapper) {
             _userOperationsRepo = userOperationsRepo;
             _mapper = mapper;
         }
@@ -67,7 +67,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("ChangePFP")]
         [Authorize]
-        public async Task<IActionResult> ChangePFP(IFormFile pfp)
+        public async Task<IActionResult> ChangePFP([FromBody]string pfp)
         {
             int id;
             try

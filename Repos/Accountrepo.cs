@@ -80,7 +80,7 @@ namespace cattoapi.Repos
         public CustomResponse<IEnumerable<AccountDTO>> SearchAccounts(string searchQuery,int take, int skip)
         {
             if (take == 0)
-                return  new CustomResponse<IEnumerable<AccountDTO>>(404, "Invalid numbers take and skip must be 0 or more");
+                return  new CustomResponse<IEnumerable<AccountDTO>>(404, "Not found");
 
 
             if (take < 0 || skip < 0)

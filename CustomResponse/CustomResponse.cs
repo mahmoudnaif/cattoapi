@@ -1,5 +1,6 @@
 ﻿namespace cattoapi.customResponse
 {
+
     public class CustomResponse<T>
     {
         public CustomResponse()

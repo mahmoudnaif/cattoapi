@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -42,8 +44,6 @@ namespace cattoapi.utlities
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
-
         public static bool IsImage(IFormFile file)
         {
 
@@ -58,10 +58,10 @@ namespace cattoapi.utlities
             return true;
         }
 
-
         public static async Task<byte[]> ConvertToByteArray(IFormFile file)
         {
-          
+            if (file == null)
+                return null;
             try
             {
                 using (MemoryStream memoryStream = new MemoryStream())
@@ -82,7 +82,45 @@ namespace cattoapi.utlities
         }
 
 
-    }
+
+        public static bool IsImage(string file)
+        {
+            try
+            {
+                byte[] imageBytes = Convert.FromBase64String(GetBase64Data(file));
+                using (Image<Rgba32> image = Image.Load<Rgba32>(imageBytes))
+                {
+                    return true; // Successfully loaded as an image
+                }
+            }
+            catch (FormatException)
+            {
+                // Invalid Base64 string
+                return false;
+            }
+            catch (Exception)
+            {
+                // Handle other exceptions as needed
+                return false;
+            }
+        }
+        public static byte[] ConvertToByteArray(string file)
+        {
+            if (file == null)
+                return null;
+
+            return Convert.FromBase64String(file);
+        }
+        private static string GetBase64Data(string base64String)
+        {
+            // Remove data URI scheme if present (e.g., data:image/jpeg;base64,)
+            int commaIndex = base64String.IndexOf(',');
+            return commaIndex == -1 ? base64String : base64String.Substring(commaIndex + 1);
+        }
+    
+
+
+}
 
     public class PasswordService
     {

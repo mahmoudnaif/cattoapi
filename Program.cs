@@ -1,8 +1,10 @@
 
 
 using cattoapi.Interfaces;
+using cattoapi.Interfaces.Posts;
 using cattoapi.Models;
 using cattoapi.Repos;
+using cattoapi.Repos.Posts;
 using cattoapi.utlities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +40,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddTransient<PasswordService>();
+builder.Services.AddScoped<IPostsRepo, PostsRepo>();
 builder.Services.AddScoped<IUserOperationsRepo, UserOperationsRepo>();
 builder.Services.AddScoped<IAdminOperationsRepo, AdminOperationsRepo>();
 builder.Services.AddScoped<IAccountRepo, Accountrepo>();

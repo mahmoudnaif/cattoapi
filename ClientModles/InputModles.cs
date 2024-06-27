@@ -40,12 +40,45 @@
 
     public class ChangePasswordModel
     {
-
         public string oldPassword { get; set; }
 
         public string newPassword { get; set; } = "";
+    }
+
+    public class PostaPostModel
+    {
+        public string? PostText { get; set; }
+ 
+       public string? PostPictrue { get; set; }
 
     }
+
+    public class EditPostModel
+    {
+        public int postId { get; set;}
+        
+        public PostaPostModel data { get; set; }  
+    }
+
+   
+
+
+
+    public class GetUsersPostsIdModel
+    {
+        public int AccountId { get; set; }
+
+        public GetUsersPostsModel limitGetModel { get; set; } = new GetUsersPostsModel();
+
+    }
+
+    public class GetUsersPostsModel
+    {
+        public int take { get; set; } = 10;
+        public int skip { get; set; } = 0;
+
+    }
+
 
 
 
