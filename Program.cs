@@ -34,8 +34,9 @@ builder.Services.AddAuthentication(options =>
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddTransient<PasswordService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddTransient<PasswordService>();
 builder.Services.AddScoped<IUserOperationsRepo, UserOperationsRepo>();
 builder.Services.AddScoped<IAdminOperationsRepo, AdminOperationsRepo>();
 builder.Services.AddScoped<IAccountRepo, Accountrepo>();

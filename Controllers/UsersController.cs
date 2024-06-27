@@ -1,4 +1,6 @@
-﻿using cattoapi.ClientModles;
+﻿using AutoMapper;
+using cattoapi.ClientModles;
+using cattoapi.DTOS;
 using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.Repos;
@@ -13,9 +15,11 @@ namespace cattoapi.Controllers
     public class UsersController : Controller
     {
         private readonly IUserOperationsRepo _userOperationsRepo;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserOperationsRepo userOperationsRepo) {
+        public UsersController(IUserOperationsRepo userOperationsRepo, IMapper mapper) {
             _userOperationsRepo = userOperationsRepo;
+            _mapper = mapper;
         }
 
 
@@ -37,8 +41,8 @@ namespace cattoapi.Controllers
             if (account == null)
                 return NotFound("wtf man how did that even happen... wrong Id in a JTW?! I'm afed");
 
-            //map account to an accountDto not all data can be sent
-            return Ok(account);
+            var accountDTO = _mapper.Map<AccountDTO>(account);
+            return Ok(accountDTO);
 
         }
 

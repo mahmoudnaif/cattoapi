@@ -1,4 +1,6 @@
-﻿using cattoapi.ClientModles;
+﻿using AutoMapper;
+using cattoapi.ClientModles;
+using cattoapi.DTOS;
 using cattoapi.Interfaces;
 using cattoapi.Models;
 using cattoapi.Repos;
@@ -15,31 +17,34 @@ namespace cattoapi.Controllers
     public class AccountsController : Controller
     {
 
-        private readonly IAccountRepo accountRepo;
+        private readonly IAccountRepo _accountRepo;
+        private readonly IMapper _mapper;
 
-        public AccountsController(IAccountRepo accountRepo)
+        public AccountsController(IAccountRepo accountRepo, IMapper mapper)
         {
-            this.accountRepo = accountRepo;
+            _accountRepo = accountRepo;
+            _mapper = mapper;
         }
 
 
         [HttpGet()]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<AccountDTO>))]
         [Authorize(Roles = "admin")]
         public IActionResult GetAccounts() 
         {
-            var accounts = accountRepo.GetAccounts();
+            var accounts = _accountRepo.GetAccounts();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(accounts);
+            IEnumerable<AccountDTO> accountDTO = _mapper.Map<IEnumerable<AccountDTO>>(accounts);
+            return Ok(accountDTO);
 
         }
 
 
         [HttpGet("id/{strId}")]
-        [ProducesResponseType(200, Type = typeof(Account))]
+        [ProducesResponseType(200, Type = typeof(AccountDTO))]
         [Authorize(Roles = "admin")]
 
         public IActionResult GetAccountById(string strId)
@@ -47,19 +52,21 @@ namespace cattoapi.Controllers
             if(!int.TryParse(strId, out int id))
                 return BadRequest(new { error = "Invalid id format. Please enter a valid integer id." });
             
-            var account = accountRepo.GetAccountById(id);
+            var account = _accountRepo.GetAccountById(id);
 
            
 
             if (account == null)
                 return NotFound();
 
-            return Ok(account);
+            var accountDTO = _mapper.Map<AccountDTO>(account);
+
+            return Ok(accountDTO);
 
         }
 
         [HttpGet("email/{email}")]
-        [ProducesResponseType(200, Type = typeof(Account))]
+        [ProducesResponseType(200, Type = typeof(AccountDTO))]
         [Authorize(Roles = "admin")]
 
         public IActionResult GetAccountByEmail(string email)
@@ -68,21 +75,24 @@ namespace cattoapi.Controllers
                 return BadRequest(new { error = "Invalid email format. Please enter a valid email." });
 
 
-            var account = accountRepo.GetAccountByEmail(email);
+            var account = _accountRepo.GetAccountByEmail(email);
 
 
 
             if (account == null)
                 return NotFound();
 
-            return Ok(account);
+
+            var accountDTO = _mapper.Map<AccountDTO>(account);
+
+            return Ok(accountDTO);
 
         }
 
 
 
         [HttpGet("search")]
-        [ProducesResponseType(200, Type = typeof(ICollection<Account>))]
+        [ProducesResponseType(200, Type = typeof(ICollection<AccountDTO>))]
         public IActionResult SearchAccounts([FromQuery] SearchModel searchModel)
         {
             if (searchModel.take == 0)
@@ -90,18 +100,16 @@ namespace cattoapi.Controllers
 
 
             if(searchModel.take<0 || searchModel.skip < 0)
-            {
                 return BadRequest(new { error = "Invalid numbers take and skip must be 0 or more" });
+            
 
-            }
-
-            var results = accountRepo.SearchAccounts(searchModel.searchQuery,searchModel.take, searchModel.skip);
+            var results = _accountRepo.SearchAccounts(searchModel.searchQuery,searchModel.take, searchModel.skip);
 
             if(results == null)
                 return NotFound();
 
-
-            return Ok(results);
+            IEnumerable<AccountDTO> accountDTO = _mapper.Map<IEnumerable<AccountDTO>>(results);
+            return Ok(accountDTO);
         }
 
     }
