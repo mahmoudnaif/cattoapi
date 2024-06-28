@@ -5,6 +5,7 @@ using cattoapi.DTOS;
 using cattoapi.Interfaces.Posts;
 using cattoapi.Models;
 using cattoapi.utlities;
+using Microsoft.Identity.Client;
 
 namespace cattoapi.Repos.Posts
 {
@@ -22,12 +23,10 @@ namespace cattoapi.Repos.Posts
        public CustomResponse<IEnumerable<PostDTO>> getUsersPosts(GetUsersPostsIdModel getUsersPostsModel)
         {
             //add limiter for the take (maximum 30) for preventing the client side from overlaoding the server
-            int AccountId = getUsersPostsModel.AccountId;
+            string AccountIdOrUserame = getUsersPostsModel.AccountIdOrUserame;
             int take = getUsersPostsModel.limitGetModel.take;
             int skip = getUsersPostsModel.limitGetModel.skip;
 
-            if (AccountId <= 0)
-                return new CustomResponse<IEnumerable<PostDTO>>(400, "Invalid ID");
 
             if (take == 0)
                 return new CustomResponse<IEnumerable<PostDTO>>(404, "Not found");
@@ -35,7 +34,23 @@ namespace cattoapi.Repos.Posts
             if (take < 0 || skip < 0)
                 return new CustomResponse<IEnumerable<PostDTO>>(400, "Invalid numbers take and skip must be 0 or more");
 
-            IEnumerable<Post> posts = _context.Posts.Where(post => post.AccountId == AccountId).Skip(skip).Take(take);
+
+            IEnumerable<Post> posts;
+            if (!int.TryParse(AccountIdOrUserame, out int id))
+            {
+                Account account = _context.Accounts.SingleOrDefault(acc =>acc.UserName == AccountIdOrUserame);
+                if(account== null)
+                    return new CustomResponse<IEnumerable<PostDTO>>(404, "No posts found");
+
+
+                posts = _context.Posts.Where(post => post.AccountId == account.AccountId).Skip(skip).Take(take);
+            }
+            else
+            {
+                posts = _context.Posts.Where(post => post.AccountId == id).Skip(skip).Take(take);
+            }
+
+           
 
             if (posts.Count() == 0)
                 return new CustomResponse<IEnumerable<PostDTO>>(404, "No posts found");

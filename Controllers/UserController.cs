@@ -90,13 +90,13 @@ namespace cattoapi.Controllers
         }
 
 
-        [HttpGet("{strId}")]
+        [HttpGet("{strIdOrUsername}")]
         [ProducesResponseType(200, Type = typeof(AccountDTO))]
-        public IActionResult GetProfiletById(string strId)
+        public IActionResult GetProfiletById(string strIdOrUsername)
         {
 
 
-            CustomResponse<ProfileDTO> customResponse = _userOperationsRepo.GetProfileById(strId);
+            CustomResponse<ProfileDTO> customResponse = _userOperationsRepo.GetProfileById(strIdOrUsername);
 
 
 
@@ -104,19 +104,11 @@ namespace cattoapi.Controllers
 
         }
 
-        [HttpGet("{strId}/posts")]
-        public IActionResult test(string strId, [FromQuery] GetUsersPostsModel getUsersPostsModel)
+        [HttpGet("{strIdOrUsername}/posts")]
+        public IActionResult test(string strIdOrUsername, [FromQuery] GetUsersPostsModel getUsersPostsModel)
         {
-            int accountId;
-            try
-            {
-                accountId = int.Parse(strId);
-            }
-            catch
-            {   
-                return StatusCode(400, new CustomResponse<AccountDTO>(400, "Id must be an integer value"));
-            }
-            CustomResponse<IEnumerable<PostDTO>> customResponse = _postsRepo.getUsersPosts(new GetUsersPostsIdModel { AccountId = accountId, limitGetModel = getUsersPostsModel });
+          
+            CustomResponse<IEnumerable<PostDTO>> customResponse = _postsRepo.getUsersPosts(new GetUsersPostsIdModel { AccountIdOrUserame = strIdOrUsername, limitGetModel = getUsersPostsModel });
 
             return StatusCode(customResponse.responseCode, customResponse);
         }

@@ -66,7 +66,7 @@
 
     public class GetUsersPostsIdModel
     {
-        public int AccountId { get; set; }
+        public string AccountIdOrUserame { get; set; }
 
         public GetUsersPostsModel limitGetModel { get; set; } = new GetUsersPostsModel();
 

@@ -1,17 +1,17 @@
-1- Refresh token approach for logging in for a while.
+1- Refresh token approach for logging in for a while. ❌
 
-2- Blacklisting a token using Redis.
+2- Blacklisting a token using Redis. ❌
 
-3- When editing a post it requires the whole post to be sent again or the null values will be applied. (consider making separate functions for editing text and photo)
+3- When editing a post it requires the whole post to be sent again or the null values will be applied. ❌ (consider making separate functions for editing text and photo)
 
-4- Password and username need their own Regex right now you can set them up as anything.
+4- Password and username need their own Regex right now you can set them up as anything. ❌
 (will delay so it doesn't bother me in testing)
 
-5- Add limiter for the take in the (searchaccounts and getposts) endpoints.
+5- Add limiter for the take in the (searchaccounts and getposts) endpoints. ❌
 (To prevent overloading the server)
 
-6- Make any function that requires accessing the DB async, so it doesn't stop the server.
+6- Make any function that requires accessing the DB async, so it doesn't stop the server. ❌
 
-7- consider checking for the role of the account from the DB when making a request since the role might have been changed since then.
+7- consider checking for the role of the account from the DB when making a request since the role might have been changed since then. ❌
 
-8- add endpoints to get profile using username.
+8- add endpoints to get profile using username. ✅

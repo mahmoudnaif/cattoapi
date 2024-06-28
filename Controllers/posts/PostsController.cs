@@ -24,16 +24,11 @@ namespace cattoapi.Controllers.posts
         [Authorize]
         public IActionResult GetPosts([FromQuery] GetUsersPostsModel getUsersPostsModel)
         {
-            int accountId;
-            try
-            {
-                accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
-            }
-            catch
-            {
-                return StatusCode(400, new CustomResponse<AccountDTO>(400, "the sent token doesn't include the account id"));
-            }
-            CustomResponse<IEnumerable<PostDTO>> customResponse = _postsRepo.getUsersPosts(new GetUsersPostsIdModel { AccountId = accountId, limitGetModel = getUsersPostsModel });
+        
+              string  accountId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            
+         
+            CustomResponse<IEnumerable<PostDTO>> customResponse = _postsRepo.getUsersPosts(new GetUsersPostsIdModel { AccountIdOrUserame = accountId, limitGetModel = getUsersPostsModel });
 
             return StatusCode(customResponse.responseCode, customResponse);
         }
