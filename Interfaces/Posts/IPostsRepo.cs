@@ -14,8 +14,8 @@ namespace cattoapi.Interfaces.Posts
 
         public CustomResponse<bool> DeletePost(int accoundId, int postId);
 
-        public Task<CustomResponse<PostDTO>> EditPost(int accountid, EditPostModel editPostModel); //This approach requiers the whole post to be sent again
-                                                                                       //or the null values will be applied
+        public Task<CustomResponse<PostDTO>> EditPost(int accountid, EditPostModel editPostModel); //This approach requires the whole post to be sent again
+                                                                                                   //or the null values will be applied
 
 
     }
