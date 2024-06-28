@@ -81,5 +81,31 @@
 
 
 
+    public class GetCommentsModel
+    {
+        public int AccountOrPostId { get; set; }
+
+        public int take { get; set; } = 10;
+        public int skip { get; set; } = 0;
+
+    }
+
+    public class PostCommentModel
+    {
+        public int postId{ get; set; }
+        public string commentText { get; set; }
+
+    }
+
+    public class EditCommentModel
+    {
+        public int commentId { get; set; }
+        public string commentText { get; set; }
+
+    }
+
+
+
+
 
 }

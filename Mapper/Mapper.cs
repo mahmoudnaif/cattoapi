@@ -11,6 +11,7 @@
             CreateMap<Account, AccountDTO> ();
             CreateMap<Post, PostDTO> ();
             CreateMap<Account, ProfileDTO> ();
+            CreateMap<Comment, CommentDTO> ();
         }
     }
 
