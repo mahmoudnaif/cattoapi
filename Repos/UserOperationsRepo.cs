@@ -92,7 +92,21 @@ namespace cattoapi.Repos
 
         }
 
+        public CustomResponse<ProfileDTO> GetProfileById(string strId)
+        {
+            if (!int.TryParse(strId, out int id))
+                return new CustomResponse<ProfileDTO>(400, "Invalid id format. Please enter a valid integer id.");
 
-        
+
+            Account account = _context.Accounts.SingleOrDefault(acc => acc.AccountId == id);
+
+            if (account == null)
+                return new CustomResponse<ProfileDTO>(404, "NOT FOUND");
+
+
+            ProfileDTO accountDTO = _mapper.Map<ProfileDTO>(account);
+
+            return new CustomResponse<ProfileDTO>(200, "Account found", accountDTO);
+        }
     }
 }

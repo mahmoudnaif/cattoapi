@@ -22,7 +22,7 @@ namespace cattoapi.Controllers.posts
 
         [HttpGet("GetPosts")]
         [Authorize]
-        public IActionResult test([FromQuery] GetUsersPostsModel getUsersPostsModel)
+        public IActionResult GetPosts([FromQuery] GetUsersPostsModel getUsersPostsModel)
         {
             int accountId;
             try
@@ -37,6 +37,8 @@ namespace cattoapi.Controllers.posts
 
             return StatusCode(customResponse.responseCode, customResponse);
         }
+        
+     
 
 
         [HttpPost("PostaPost")]

@@ -11,5 +11,7 @@
         public long LikesCount { get; set; }
 
         public long CommentsCount { get; set; }
+
+        public DateTime DateCreated { get; set; }
     }
 }

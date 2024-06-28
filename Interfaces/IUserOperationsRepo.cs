@@ -12,5 +12,7 @@ namespace cattoapi.Interfaces
 
         public Task<CustomResponse<bool>> Changepfp(int accountId, string pfp);
 
+        public CustomResponse<ProfileDTO> GetProfileById(string strId);
+
     }
 }
