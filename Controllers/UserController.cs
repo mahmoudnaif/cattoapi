@@ -105,7 +105,7 @@ namespace cattoapi.Controllers
         }
 
         [HttpGet("{strIdOrUsername}/posts")]
-        public IActionResult test(string strIdOrUsername, [FromQuery] GetUsersPostsModel getUsersPostsModel)
+        public IActionResult test(string strIdOrUsername, [FromQuery] TakeSkipModel getUsersPostsModel)
         {
           
             CustomResponse<IEnumerable<PostDTO>> customResponse = _postsRepo.getUsersPosts(new GetUsersPostsIdModel { AccountIdOrUserame = strIdOrUsername, limitGetModel = getUsersPostsModel });

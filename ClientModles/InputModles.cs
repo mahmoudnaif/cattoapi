@@ -68,11 +68,11 @@
     {
         public string AccountIdOrUserame { get; set; }
 
-        public GetUsersPostsModel limitGetModel { get; set; } = new GetUsersPostsModel();
+        public TakeSkipModel limitGetModel { get; set; } = new TakeSkipModel();
 
     }
 
-    public class GetUsersPostsModel
+    public class TakeSkipModel
     {
         public int take { get; set; } = 10;
         public int skip { get; set; } = 0;
@@ -83,10 +83,9 @@
 
     public class GetCommentsModel
     {
-        public int AccountOrPostId { get; set; }
+        public int postId { get; set; }
 
-        public int take { get; set; } = 10;
-        public int skip { get; set; } = 0;
+        public TakeSkipModel limitGetModel { get; set; } = new TakeSkipModel();
 
     }
 

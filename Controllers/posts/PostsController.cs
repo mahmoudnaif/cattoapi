@@ -22,7 +22,7 @@ namespace cattoapi.Controllers.posts
 
         [HttpGet("GetPosts")]
         [Authorize]
-        public IActionResult GetPosts([FromQuery] GetUsersPostsModel getUsersPostsModel)
+        public IActionResult GetPosts([FromQuery] TakeSkipModel getUsersPostsModel)
         {
         
               string  accountId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;

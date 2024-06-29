@@ -7,7 +7,7 @@ using cattoapi.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Collections.Generic;
 
-namespace cattoapi.Repos
+namespace cattoapi.Repos.Commetns
 {
     public class CommentsRepo : ICommentsRepo
     {
@@ -21,35 +21,44 @@ namespace cattoapi.Repos
         }
         public CustomResponse<IEnumerable<CommentDTO>> GetPostComments(GetCommentsModel getComments)
         {
-            int postId = getComments.AccountOrPostId;
-            int take = getComments.take;
-            int skip = getComments.skip;
+            int postId = getComments.postId;
+            int take = getComments.limitGetModel.take;
+            int skip = getComments.limitGetModel.skip;
 
             if (postId < 0)
-                return new CustomResponse<IEnumerable<CommentDTO>>(400,"ID must be positive");
+                return new CustomResponse<IEnumerable<CommentDTO>>(400, "ID must be positive");
 
             if (take == 0)
                 return new CustomResponse<IEnumerable<CommentDTO>>(404, "Not found");
 
-            if(take <0 || skip < 0)
+            if (take < 0 || skip < 0)
                 return new CustomResponse<IEnumerable<CommentDTO>>(400, "Take and skip must be positive values");
 
-            IEnumerable<Comment> comments = _context.Comments.Where(com => com.PostId == postId).Take(take).Skip(skip);
+            List<Comment> comments = _context.Comments.Where(com => com.PostId == postId).Take(take).Skip(skip).ToList();
 
             if (comments.Count() == 0)
                 return new CustomResponse<IEnumerable<CommentDTO>>(404, "Not found");
 
-            IEnumerable<CommentDTO> commentsDTO = _mapper.Map<IEnumerable<CommentDTO>>(comments);
-            return new CustomResponse<IEnumerable<CommentDTO>>(200, "Comments retreived",commentsDTO);
-            
+            List<CommentDTO> commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+
+
+            for (int i = 0; i < commentsDTO.Count; i++)
+            {
+                commentsDTO[i].Profile = _mapper.Map<ProfileDTO>(_context.Accounts.SingleOrDefault(acc => acc.AccountId == comments[i].AccountId));
+            }
+
+
+
+            return new CustomResponse<IEnumerable<CommentDTO>>(200, "Comments retreived", commentsDTO);
+
 
 
         }
-        public CustomResponse<IEnumerable<CommentDTO>> GetUserComments(GetCommentsModel getComments)
+        public CustomResponse<IEnumerable<CommentDTO>> GetUserComments(int accountId, TakeSkipModel takeSkipModel)
         {
-            int accountId = getComments.AccountOrPostId;
-            int take = getComments.take;
-            int skip = getComments.skip;
+
+            int take = takeSkipModel.take;
+            int skip = takeSkipModel.skip;
 
             if (accountId < 0)
                 return new CustomResponse<IEnumerable<CommentDTO>>(400, "ID must be positive");
@@ -78,7 +87,7 @@ namespace cattoapi.Repos
 
 
             if (_context.Posts.SingleOrDefault(post => post.PostId == postId) == null)
-                return new CustomResponse<CommentDTO>(404, "Post doesn not exist");
+                return new CustomResponse<CommentDTO>(404, "Post does not exist");
 
 
             Comment comment = new Comment();
@@ -96,7 +105,7 @@ namespace cattoapi.Repos
             {
                 return new CustomResponse<CommentDTO>(500, "Something went wrong. try again later");
             }
-            
+
         }
 
         public CustomResponse<CommentDTO> EditComment(int accountId, EditCommentModel editCommentModel)
@@ -123,11 +132,11 @@ namespace cattoapi.Repos
                 _context.SaveChanges();
                 return new CustomResponse<CommentDTO>(200, "Comment edited sucessfully", _mapper.Map<CommentDTO>(comment));
             }
-           catch
+            catch
             {
                 return new CustomResponse<CommentDTO>(500, "Something went wrong. try again later");
             }
-            
+
 
         }
 

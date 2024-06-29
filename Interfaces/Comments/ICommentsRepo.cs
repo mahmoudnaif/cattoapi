@@ -8,7 +8,7 @@ namespace cattoapi.Interfaces.Comments
     {  
         public CustomResponse<IEnumerable<CommentDTO>> GetPostComments(GetCommentsModel getComments);
 
-        public CustomResponse<IEnumerable<CommentDTO>> GetUserComments(GetCommentsModel getComments);
+        public CustomResponse<IEnumerable<CommentDTO>> GetUserComments(int accountId,TakeSkipModel takeSkipModel);
 
         public CustomResponse<CommentDTO> PostComment(int accountId, PostCommentModel postCommentModel);
 
