@@ -15,3 +15,5 @@
 7- consider checking for the role of the account from the DB when making a request since the role might have been changed since then. ❌
 
 8- add endpoints to get profile using username. ✅
+
+9- Adjust endpoints names to be user friendly (right now they're spaghetti). ❌
