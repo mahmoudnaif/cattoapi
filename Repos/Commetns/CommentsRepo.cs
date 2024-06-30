@@ -85,8 +85,8 @@ namespace cattoapi.Repos.Commetns
             if (commentText.Length == 0)
                 return new CustomResponse<CommentDTO>(400, "Comment text can not be empty");
 
-
-            if (_context.Posts.SingleOrDefault(post => post.PostId == postId) == null)
+            Post post = _context.Posts.SingleOrDefault(post => post.PostId == postId);
+            if (post == null)
                 return new CustomResponse<CommentDTO>(404, "Post does not exist");
 
 
@@ -98,6 +98,7 @@ namespace cattoapi.Repos.Commetns
             try
             {
                 _context.Comments.Add(comment);
+                post.CommentsCount++;
                 _context.SaveChanges();
                 return new CustomResponse<CommentDTO>(200, "Comment posted sucessfully", _mapper.Map<CommentDTO>(comment));
             }
@@ -157,6 +158,8 @@ namespace cattoapi.Repos.Commetns
             try
             {
                 _context.Comments.Remove(comment);
+                Post post = _context.Posts.SingleOrDefault(post => post.PostId == comment.PostId);
+                post.CommentsCount--;
                 _context.SaveChanges();
                 return new CustomResponse<bool>(200, "Comment deleted sucessfully");
             }
