@@ -81,7 +81,7 @@
 
 
 
-    public class GetCommentsModel
+    public class GetFromPostModel
     {
         public int postId { get; set; }
 

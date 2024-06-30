@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using cattoapi.ClientModles;
-using cattoapi.customResponse;
+using cattoapi.CustomResponse;
 using cattoapi.DTOS;
 using cattoapi.Interfaces.Comments;
 using cattoapi.Models;
@@ -19,7 +19,7 @@ namespace cattoapi.Repos.Commetns
             _context = context;
             _mapper = mapper;
         }
-        public CustomResponse<IEnumerable<CommentDTO>> GetPostComments(GetCommentsModel getComments)
+        public CustomResponse<IEnumerable<CommentDTO>> GetPostComments(GetFromPostModel getComments)
         {
             int postId = getComments.postId;
             int take = getComments.limitGetModel.take;

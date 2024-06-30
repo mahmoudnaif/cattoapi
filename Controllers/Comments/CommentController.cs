@@ -1,5 +1,5 @@
 ﻿using cattoapi.ClientModles;
-using cattoapi.customResponse;
+using cattoapi.CustomResponse;
 using cattoapi.DTOS;
 using cattoapi.Interfaces.Comments;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +45,7 @@ namespace cattoapi.Controllers.Comments
 
         [HttpGet("Posts/Comments")]
         
-        public IActionResult ViewPostComments([FromQuery] GetCommentsModel getCommentsModel)
+        public IActionResult ViewPostComments([FromQuery] GetFromPostModel getCommentsModel)
         {
           
             CustomResponse<IEnumerable<CommentDTO>> customResponse = _commentsRepo.GetPostComments(getCommentsModel);

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using cattoapi.ClientModles;
-using cattoapi.customResponse;
+using cattoapi.CustomResponse;
 using cattoapi.DTOS;
 using cattoapi.Interfaces;
 using cattoapi.Models;

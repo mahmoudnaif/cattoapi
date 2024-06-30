@@ -1,5 +1,5 @@
 ﻿using cattoapi.ClientModles;
-using cattoapi.customResponse;
+using cattoapi.CustomResponse;
 
 namespace cattoapi.Interfaces
 {
