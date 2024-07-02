@@ -44,6 +44,49 @@ namespace cattoapi.utlities
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public static string generateVerficationJWT(int id, string key)
+        {
+            var claims = new Claim[]
+            {
+            new Claim("accountId", id.ToString()),
+            new Claim("Verify", "true"),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var keyInBytes = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var creds = new SigningCredentials(keyInBytes, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+           issuer: "https://localhost:7180",
+           audience: "https://localhost:7180",
+           claims: claims,
+           expires: DateTime.Now.AddMinutes(10),
+           signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static string generateChangePasswordJWT(int id, string key)
+        {
+            var claims = new Claim[]
+            {
+            new Claim("accountId", id.ToString()),
+            new Claim("changepassword", "true"),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var keyInBytes = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var creds = new SigningCredentials(keyInBytes, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+           issuer: "https://localhost:7180",
+           audience: "https://localhost:7180",
+           claims: claims,
+           expires: DateTime.Now.AddMinutes(10),
+           signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
         public static bool IsImage(IFormFile file)
         {
 

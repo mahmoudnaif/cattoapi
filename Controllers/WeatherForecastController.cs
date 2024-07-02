@@ -1,3 +1,5 @@
+using cattoapi.CustomResponse;
+using cattoapi.Interfaces.EmailServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cattoapi.Controllers
@@ -12,22 +14,20 @@ namespace cattoapi.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IEmailServicesRepo _emailServicesRepo;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,IEmailServicesRepo emailServicesRepo)
         {
             _logger = logger;
+            _emailServicesRepo = emailServicesRepo;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> Test()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            CustomResponse<bool> customResponse = await _emailServicesRepo.SendVerificationEmail(1);
+
+            return StatusCode(customResponse.responseCode, customResponse);
         }
     }
 }

@@ -2,11 +2,14 @@
 
 using cattoapi.Interfaces;
 using cattoapi.Interfaces.Comments;
+using cattoapi.Interfaces.EmailServices;
 using cattoapi.Interfaces.Likes;
 using cattoapi.Interfaces.Posts;
 using cattoapi.Models;
+using cattoapi.Models.EmailModel;
 using cattoapi.Repos;
 using cattoapi.Repos.Commetns;
+using cattoapi.Repos.EmailServices;
 using cattoapi.Repos.Likes;
 using cattoapi.Repos.Posts;
 using cattoapi.utlities;
@@ -42,8 +45,10 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<PasswordService>();
+
+builder.Services.AddScoped<IEmailServicesRepo, EmailServicesRepo>();
 builder.Services.AddScoped<ILikesRepo, LikesRepo>();
 builder.Services.AddScoped<ICommentsRepo, CommentsRepo>();
 builder.Services.AddScoped<IPostsRepo, PostsRepo>();
