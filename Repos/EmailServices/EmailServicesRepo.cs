@@ -1,4 +1,5 @@
 ﻿using cattoapi.CustomResponse;
+using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Interfaces.EmailServices;
 using cattoapi.Models;
 using cattoapi.Models.EmailModel;
@@ -9,6 +10,7 @@ using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using MimeKit.Utils;
+using static cattoapi.utlities.Utlities;
 
 namespace cattoapi.Repos.EmailServices
 {
@@ -17,12 +19,14 @@ namespace cattoapi.Repos.EmailServices
         private readonly CattoDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly PasswordService _passwordService;
+        private readonly IBlackListTokensRepo _blackListTokensRepo;
         private readonly EmailSettings _emailSettings;
 
-        public EmailServicesRepo(CattoDbContext context, IOptions<EmailSettings> emailSettings,IConfiguration configuration, PasswordService passwordService) {
+        public EmailServicesRepo(CattoDbContext context, IOptions<EmailSettings> emailSettings,IConfiguration configuration, PasswordService passwordService,IBlackListTokensRepo blackListTokensRepo) {
             _context = context;
             _configuration = configuration;
             _passwordService = passwordService;
+            _blackListTokensRepo = blackListTokensRepo;
             _emailSettings = emailSettings.Value;
         }
 
@@ -83,7 +87,7 @@ namespace cattoapi.Repos.EmailServices
             try
             {
                 _context.SaveChanges();
-                return new CustomResponse<bool>(200, "Email verfied sucessfully");
+                return new CustomResponse<bool>(200, "Email verfied successfully");
             }
             catch
             {
@@ -157,6 +161,7 @@ namespace cattoapi.Repos.EmailServices
             try
             {
                 _context.SaveChanges();
+                _blackListTokensRepo.BlacklistTokensAsync(accountId, DateTime.UtcNow, TokenType.Login);
                 return new CustomResponse<bool>(200, "Password Changed successfuuly");
             }
             catch
@@ -230,7 +235,7 @@ namespace cattoapi.Repos.EmailServices
         <body>
             <div class=""container"">
                 <div class=""header"">
-                    <img src=""your-logo.png"" alt=""Your Logo"">
+                    <img src=""C:\Users\mahmo\OneDrive\Desktop\Logo.png"" alt=""Your Logo"">
                 </div>
                 <div class=""content"">
                     <h1>Email Verification</h1>
@@ -239,7 +244,7 @@ namespace cattoapi.Repos.EmailServices
                     <p>If you did not create an account, please ignore this email.</p>
                 </div>
                 <div class=""footer"">
-                    &copy; 2024 Your Company. All rights reserved.
+                    &copy; 2024 Catto Social. All rights reserved.
                 </div>
             </div>
         </body>
@@ -312,7 +317,7 @@ namespace cattoapi.Repos.EmailServices
         <body>
             <div class=""container"">
                 <div class=""header"">
-                    <img src=""your-logo.png"" alt=""Your Logo"">
+                    <img src=""C:\Users\mahmo\OneDrive\Desktop\Logo.png"" alt=""Your Logo"">
                 </div>
                 <div class=""content"">
                     <h1>Change password request</h1>
@@ -321,7 +326,7 @@ namespace cattoapi.Repos.EmailServices
                     <p>If you did not submit this request, please ignore this email.</p>
                 </div>
                 <div class=""footer"">
-                    &copy; 2024 Your Company. All rights reserved.
+                    &copy; 2024 Catto Social. All rights reserved.
                 </div>
             </div>
         </body>

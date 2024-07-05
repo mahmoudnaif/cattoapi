@@ -14,7 +14,12 @@ namespace cattoapi.utlities
 {
     public static class Utlities
     {
-
+        public enum TokenType
+        {
+            Login,
+            EmailToken,
+            
+        }
         public static bool IsValidEmail(string email)
         {
             string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
@@ -28,7 +33,10 @@ namespace cattoapi.utlities
             {
             new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
             new Claim("role", role),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+             new Claim(JwtRegisteredClaimNames.Iat,
+              ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString(),
+              ClaimValueTypes.Integer64)
             };
 
             var keyInBytes = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -50,7 +58,10 @@ namespace cattoapi.utlities
             {
             new Claim("accountId", id.ToString()),
             new Claim("Verify", "true"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+             new Claim(JwtRegisteredClaimNames.Iat,
+              ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString(),
+              ClaimValueTypes.Integer64)
             };
 
             var keyInBytes = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -72,7 +83,10 @@ namespace cattoapi.utlities
             {
             new Claim("accountId", id.ToString()),
             new Claim("changepassword", "true"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+             new Claim(JwtRegisteredClaimNames.Iat,
+              ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString(),
+              ClaimValueTypes.Integer64)
             };
 
             var keyInBytes = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

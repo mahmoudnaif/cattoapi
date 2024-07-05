@@ -1,6 +1,11 @@
 using cattoapi.CustomResponse;
+using cattoapi.DTOS;
+using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Interfaces.EmailServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using static cattoapi.utlities.Utlities;
 
 namespace cattoapi.Controllers
 {
@@ -14,20 +19,32 @@ namespace cattoapi.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IEmailServicesRepo _emailServicesRepo;
+        private readonly IBlackListTokensRepo _blackListTokensRepo;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger,IEmailServicesRepo emailServicesRepo)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,IBlackListTokensRepo blackListTokensRepo)
         {
             _logger = logger;
-            _emailServicesRepo = emailServicesRepo;
+            _blackListTokensRepo = blackListTokensRepo;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
+        [Authorize]
         public async Task<IActionResult> Test()
         {
-            CustomResponse<bool> customResponse = await _emailServicesRepo.SendVerificationEmail(1);
+            int accountId;
 
-            return StatusCode(customResponse.responseCode, customResponse);
+            try
+            {
+                accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+            }
+            catch
+            {
+                return StatusCode(400, new CustomResponse<AccountDTO>(400, "the sent token doesn't include the account id"));
+            }
+
+            await _blackListTokensRepo.BlacklistTokensAsync(accountId, DateTime.UtcNow,TokenType.EmailToken);
+
+            return Ok();
         }
     }
 }

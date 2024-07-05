@@ -1,8 +1,11 @@
 ﻿using cattoapi.ClientModles;
 using cattoapi.CustomResponse;
 using cattoapi.Interfaces;
+using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Models;
 using cattoapi.utlities;
+using Microsoft.Identity.Client;
+using static cattoapi.utlities.Utlities;
 
 namespace cattoapi.Repos
 {
@@ -10,10 +13,12 @@ namespace cattoapi.Repos
     {
         private readonly CattoDbContext _context;
         private readonly PasswordService _passwordService;
+        private readonly IBlackListTokensRepo _blackListTokensRepo;
 
-        public AdminOperationsRepo(CattoDbContext context, PasswordService passwordService) {
+        public AdminOperationsRepo(CattoDbContext context, PasswordService passwordService,IBlackListTokensRepo blackListTokensRepo) {
             _context = context;
             this._passwordService = passwordService;
+            _blackListTokensRepo = blackListTokensRepo;
         }
 
 
@@ -40,6 +45,7 @@ namespace cattoapi.Repos
             try
             {
                 _context.SaveChanges();
+                _blackListTokensRepo.BlacklistTokensAsync((int)account.AccountId, DateTime.UtcNow, TokenType.Login);
                 return new CustomResponse<bool>(200, "Email changed successfully.");
             }
             catch
@@ -68,6 +74,7 @@ namespace cattoapi.Repos
             try
             {
                 _context.SaveChanges();
+                _blackListTokensRepo.BlacklistTokensAsync((int)account.AccountId, DateTime.UtcNow, TokenType.Login);
                 return new CustomResponse<bool>(200, "Password changed successfully.");
             }
             catch
@@ -97,6 +104,7 @@ namespace cattoapi.Repos
             try
             {
                 _context.SaveChanges();
+                _blackListTokensRepo.BlacklistTokensAsync((int)account.AccountId, DateTime.UtcNow, TokenType.Login);
                 return new CustomResponse<bool>(200, "Role changed successfully.");
             }
             catch
@@ -153,6 +161,7 @@ namespace cattoapi.Repos
             {
                 _context.Accounts.Remove(account);
                 _context.SaveChanges();
+                _blackListTokensRepo.BlacklistTokensAsync((int)account.AccountId, DateTime.UtcNow, TokenType.Login);
                 return new CustomResponse<bool>(200, "Account deleted successfully.");
             }
             catch

@@ -2,9 +2,11 @@
 using cattoapi.CustomResponse;
 using cattoapi.DTOS;
 using cattoapi.Interfaces;
+using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Models;
 using cattoapi.utlities;
 using System.Security.Claims;
+using static cattoapi.utlities.Utlities;
 
 namespace cattoapi.Repos
 {
@@ -13,12 +15,14 @@ namespace cattoapi.Repos
         private readonly CattoDbContext _context;
         private readonly PasswordService _passwordService;
         private readonly IMapper _mapper;
+        private readonly IBlackListTokensRepo _blackListTokensRepo;
 
-        public UserOperationsRepo(CattoDbContext context,PasswordService passwordService,IMapper mapper)
+        public UserOperationsRepo(CattoDbContext context,PasswordService passwordService,IMapper mapper,IBlackListTokensRepo blackListTokensRepo)
         {
             this._context = context;
             _passwordService = passwordService;
             _mapper = mapper;
+            _blackListTokensRepo = blackListTokensRepo;
         }
 
 
@@ -52,6 +56,7 @@ namespace cattoapi.Repos
             try
             {
                 _context.SaveChanges();
+                _blackListTokensRepo.BlacklistTokensAsync(accountId, DateTime.UtcNow, TokenType.Login);
                 return new CustomResponse<bool>(200, "Password cahnged sucessfully");
             }
             catch
