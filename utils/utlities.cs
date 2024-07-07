@@ -22,9 +22,22 @@ namespace cattoapi.utlities
         }
         public static bool IsValidEmail(string email)
         {
-            string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+            string emailRegex = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
 
-            return Regex.IsMatch(email, pattern);
+            return Regex.IsMatch(email, emailRegex);
+        }
+        public static bool IsValidPassword(string password)
+        {
+            string passwordRegex = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$";
+
+            return Regex.IsMatch (password, passwordRegex);
+        }
+
+        public static bool IsValidUsername(string username)
+        {
+            string usernameRegex = @"^[a-zA-Z0-9]([_](?![_])|[a-zA-Z0-9]){3,16}[a-zA-Z0-9]$";
+
+            return Regex.IsMatch(username, usernameRegex);
         }
 
         public static string generateLoginJWT(int id, string role,string key)

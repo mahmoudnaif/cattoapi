@@ -45,6 +45,14 @@
         public string newPassword { get; set; } = "";
     }
 
+    public class ChangePasswordEmailModel
+    {
+        public string newPassword { get; set; }
+
+        public string repeatNewPassword { get; set; }
+    }
+
+
     public class PostaPostModel
     {
         public string? PostText { get; set; }

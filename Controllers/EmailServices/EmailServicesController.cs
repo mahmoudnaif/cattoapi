@@ -71,7 +71,7 @@ namespace cattoapi.Controllers.Security
 
         [HttpPut("ChangePassword")]
         [Authorize]
-        public IActionResult ChangePassword(ChangePasswordModel changePasswordModel)
+        public IActionResult ChangePassword(ChangePasswordEmailModel changePasswordEmailModel)
         {
             int id;
             try
@@ -84,7 +84,7 @@ namespace cattoapi.Controllers.Security
             {
                 return StatusCode(400, new CustomResponse<AccountDTO>(400, "Can't verify email using that token"));
             }
-            CustomResponse<bool> customResponse = _emailServicesRepo.ChangePassword(id, changePasswordModel.newPassword,changePasswordModel.oldPassword);
+            CustomResponse<bool> customResponse = _emailServicesRepo.ChangePassword(id, changePasswordEmailModel.newPassword,changePasswordEmailModel.repeatNewPassword);
 
             return StatusCode(customResponse.responseCode, customResponse);
         }

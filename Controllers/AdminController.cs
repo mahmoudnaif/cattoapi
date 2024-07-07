@@ -21,7 +21,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("Changepassword")]
         [ProducesResponseType(200)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult ChangePassword([FromBody] AdminChangeModel adminChangeModel)
         {
            
@@ -35,7 +35,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("changeEmail")]
         [ProducesResponseType(200)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult ChangeEmail([FromBody] AdminChangeModel adminChangeModel)
         {
           
@@ -51,7 +51,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("ChangeUserName")]
         [ProducesResponseType(200)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult ChangeUserName([FromBody] AdminChangeModel adminChangeModel)
         {
 
@@ -66,7 +66,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("ChangeRole")]
         [ProducesResponseType(200)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult ChangeRole([FromBody] AdminChangeModel adminChangeModel)
         {
 
@@ -81,7 +81,7 @@ namespace cattoapi.Controllers
 
         [HttpPut("VerifyAccount")]
         [ProducesResponseType(200)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult VerifyAccount([FromBody] string email)
         {
 
@@ -97,7 +97,7 @@ namespace cattoapi.Controllers
 
         [HttpDelete("RemovePFP")]
         [ProducesResponseType(204)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult RemovePFP([FromBody] string email)
         {
 
@@ -112,7 +112,7 @@ namespace cattoapi.Controllers
 
         [HttpDelete("DeleteAccount")]
         [ProducesResponseType(204)]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult DeleteAccount([FromBody] string email)
         {
 

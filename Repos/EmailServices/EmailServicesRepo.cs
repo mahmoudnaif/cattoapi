@@ -1,4 +1,5 @@
-﻿using cattoapi.CustomResponse;
+﻿using cattoapi.ClientModles;
+using cattoapi.CustomResponse;
 using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Interfaces.EmailServices;
 using cattoapi.Models;
@@ -141,10 +142,14 @@ namespace cattoapi.Repos.EmailServices
 
         public CustomResponse<bool> ChangePassword(int accountId, string newPassword,string repeatNewPassword )
         {
-            if(newPassword.Trim() ==""|| newPassword!=repeatNewPassword)
+
+            if (!Utlities.IsValidPassword(newPassword))
+                return new CustomResponse<bool>(400, "Password must be at least 8 character long with at least 1 capital letter one small and a number.");
+
+            if (newPassword!=repeatNewPassword)
                 return new CustomResponse<bool>(400,"Password repitation does not match");
 
-
+         
 
             Account account = _context.Accounts.SingleOrDefault(acc => acc.AccountId == accountId);
             if (account == null)

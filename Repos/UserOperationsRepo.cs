@@ -43,6 +43,10 @@ namespace cattoapi.Repos
         }
         public CustomResponse<bool> ChangePassword(int accountId,string oldPassword, string newPassword)
         {
+            if (!Utlities.IsValidPassword(newPassword))
+                return new CustomResponse<bool>(400, "Password must be at least 8 character long with at least 1 capital letter one small and a number.");
+
+
             Account account = _context.Accounts.SingleOrDefault(acc => acc.AccountId== accountId);
 
             if (account == null)

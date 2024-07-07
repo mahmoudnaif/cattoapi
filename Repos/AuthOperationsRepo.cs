@@ -27,14 +27,18 @@ namespace cattoapi.Repos
 
         public async Task<CustomResponse<bool>> CreateAccountAsync(SiqnupModel siqnupModel)
         {
-            if (!utlities.Utlities.IsValidEmail(siqnupModel.email))
+            if (!Utlities.IsValidEmail(siqnupModel.email))
                 return new CustomResponse<bool>(400, "Invalid email");
 
-            //Implment Regex for UserName and Password
+            if (!Utlities.IsValidUsername(siqnupModel.userName))
+                return new CustomResponse<bool>(400, "Invalid username");
+
+            if (!Utlities.IsValidPassword(siqnupModel.password))
+                return new CustomResponse<bool>(400, "Password must be at least 8 character long with at least 1 capital letter one small and a number.");
 
 
             if (siqnupModel.password != siqnupModel.repeatPassword)
-                 return new CustomResponse<bool>(400, "Passwords don't match");
+                 return new CustomResponse<bool>(400, "Passwords does not match");
 
 
 

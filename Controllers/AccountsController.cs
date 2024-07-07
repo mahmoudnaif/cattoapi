@@ -29,7 +29,7 @@ namespace cattoapi.Controllers
 
         [HttpGet()]
         [ProducesResponseType(200, Type = typeof(IEnumerable<AccountDTO>))]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
         public IActionResult GetAccounts() 
         {
             CustomResponse<IEnumerable<AccountDTO>> customResponse = _accountRepo.GetAccounts();
@@ -43,7 +43,7 @@ namespace cattoapi.Controllers
 
         [HttpGet("id/{strId}")]
         [ProducesResponseType(200, Type = typeof(AccountDTO))]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
 
         public IActionResult GetAccountById(string strId)
         {
@@ -59,7 +59,7 @@ namespace cattoapi.Controllers
 
         [HttpGet("email/{email}")]
         [ProducesResponseType(200, Type = typeof(AccountDTO))]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,SUPPADUPPA")]
 
         public IActionResult GetAccountByEmail(string email)
         {
