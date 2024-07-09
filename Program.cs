@@ -1,5 +1,6 @@
 
 
+using AspNetCoreRateLimit;
 using cattoapi.Interfaces;
 using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Interfaces.Comments;
@@ -147,8 +148,14 @@ builder.Services.AddSwaggerGen((s =>
             });
 }));
 
-//add cache to blacklist tokens
+//add cache to blacklist tokens and for rate limiting
 builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddInMemoryRateLimiting();
+
+
+
 
 builder.Services.AddDbContext<CattoDbContext>(op =>
 {
@@ -162,6 +169,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseIpRateLimiting();
 
 app.UseHttpsRedirection();
 

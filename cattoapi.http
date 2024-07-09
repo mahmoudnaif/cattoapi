@@ -1,6 +1,10 @@
-@cattoapi_HostAddress = http://localhost:5052
+@cattoapi_HostAddress = https://localhost:7180
 
 GET {{cattoapi_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+GET {{cattoapi_HostAddress}}
 
 ###
