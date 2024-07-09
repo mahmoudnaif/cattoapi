@@ -292,14 +292,6 @@ To use the API, make requests to the endpoints provided below. Here are some exa
   GET /api/User/{strIdOrUsername}/posts
   ```
 
-### WeatherForecast
-
-- **Get Weather Forecast:**
-
-  ```http
-  GET /WeatherForecast
-  ```
-
 
 ### Schemas
 
