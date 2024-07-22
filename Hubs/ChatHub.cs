@@ -29,20 +29,21 @@ namespace SignalRChatApp.Hubs
             _mapper = mapper;
         }
 
-        public async Task<int> VerifyToken()
+        private async Task<int> VerifyToken()
         {
           return await _tokensRepo.IsTokenValid(Context.GetHttpContext().Request.Query["access_token"]);
         }
-        public async Task<bool> SendMessage(int receiverId, string messageText)
+
+        public async Task<CustomResponse<bool>> SendMessage(int receiverId, string messageText)
         {
             if (messageText.Trim().Length == 0)
-                return false;
+                return new CustomResponse<bool>(400,"message can't be empty");
 
             int senderId = await VerifyToken();
             if (senderId == 0)
             {
                 Context.Abort();
-                return false;
+                return new CustomResponse<bool>(401, "Session expired");
             }
 
             Message message = new Message();
@@ -62,13 +63,13 @@ namespace SignalRChatApp.Hubs
             }
 
             if (conversation == null)
-                 if(!await CreateConvo(receiverId))
-                    return false;
-               
+                 if((await CreateConvo(receiverId)).responseCode != 201)
+                     return new CustomResponse<bool>(500, "internal error");
 
 
 
-            
+
+
 
 
             message.Content = messageText;
@@ -89,23 +90,23 @@ namespace SignalRChatApp.Hubs
                     Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", senderId, messageDTO);
                 }
 
-                return true;
+                return new CustomResponse<bool>(201,"Message sent successfully");
 
             }
             catch
             {
-                return false;
+                return new CustomResponse<bool>(500, "internal error");
             }
 
         }
         
-        public async Task<bool> ViewConverSations(int take, int skip)
+        public async Task<CustomResponse<IEnumerable<ConversationDTO>>> ViewConverSations(int take, int skip)
         {
             int senderId = await VerifyToken();
             if (senderId == 0)
             {
                 Context.Abort();
-                return false;
+                return new CustomResponse<IEnumerable<ConversationDTO>>(401, "Session expired");
             }
 
             IEnumerable<Conversation> conversations = _context.Conversations.Where(c => c.Participant1Id == senderId || c.Participant2Id == senderId).Include(c => c.Messages).Select(c => new
@@ -118,7 +119,7 @@ namespace SignalRChatApp.Hubs
 
 
             if (conversations.Count() == 0)
-                return false;
+                return  new CustomResponse<IEnumerable<ConversationDTO>>(404, "Not found");
 
 
 
@@ -126,21 +127,21 @@ namespace SignalRChatApp.Hubs
 
 
 
-            Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", _mapper.Map<IEnumerable<ConversationDTO>>(conversations));
-            
+          IEnumerable<ConversationDTO> conversationsDTO = _mapper.Map<IEnumerable<ConversationDTO>>(conversations);
 
 
-            return true;
+
+            return new CustomResponse<IEnumerable<ConversationDTO>>(200, "Conversations retrieved successfully", conversationsDTO);
 
         }
 
-        public async Task<bool> CreateConvo(int receiverId)
+        public async Task<CustomResponse<bool>> CreateConvo(int receiverId)
         {
             int senderId = await VerifyToken();
             if ( senderId == 0)
             {
                 Context.Abort();
-                return false;
+                return new CustomResponse<bool>(401,"session expired");
             }
                 
 
@@ -162,17 +163,17 @@ namespace SignalRChatApp.Hubs
             {
                 _context.Conversations.Add(conversation);
                 await _context.SaveChangesAsync();
-                return true;
+                return new CustomResponse<bool>(201, "Conversation Created succesffully");
             }
             catch
             {
-                return false;
+                return new CustomResponse<bool>(500, "Internal error");
             }
         }
 
         private async Task<bool> SendPendingMessages(int userId,int take, int skip)
         {
-            var messages = _context.Messages.Where(M => (M.Participant1Id == userId || M.Participant2Id == userId) && M.Pending == true).Skip(skip).Take(take).ToList();
+            var messages = _context.Messages.Where(M => (M.Participant1Id == userId || M.Participant2Id == userId) && M.Pending == true).OrderBy(M => M.Timestamp).Skip(skip).Take(take).ToList();
 
             if (messages.Count() == 0)
                 return false;
@@ -190,10 +191,12 @@ namespace SignalRChatApp.Hubs
 
             _userIdConnectionIdMap.TryGetValue(userId, out string receiverConnectionId);
 
-            Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", _mapper.Map<IEnumerable<MessageDTO>>(messages),"HEHE BOI");
+            IEnumerable<MessageDTO> messagesDTO = _mapper.Map<IEnumerable<MessageDTO>>(messages);
 
-            
-            if(messages.Count() < take)
+            Clients.Client(receiverConnectionId).SendAsync("ReceivePendingMessages", new CustomResponse<IEnumerable<MessageDTO>>(200, "Pedning messages", messagesDTO));
+
+
+            if (messages.Count() < take)
                 return false;
 
 
