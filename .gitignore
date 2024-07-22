@@ -366,5 +366,6 @@ FodyWeavers.xsd
 
 python/*.txt
 cattoapi_DB/
+DB folder/
 appsettings.json
 appsettings.json
