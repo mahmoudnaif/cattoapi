@@ -6,13 +6,16 @@ namespace cattoapi.Models;
 
 public partial class CattoDbContext : DbContext
 {
+    private readonly IConfiguration _configuration;
+
     public CattoDbContext()
     {
     }
 
-    public CattoDbContext(DbContextOptions<CattoDbContext> options)
+    public CattoDbContext(DbContextOptions<CattoDbContext> options,IConfiguration configuration)
         : base(options)
     {
+        _configuration = configuration;
     }
 
     public virtual DbSet<Account> Accounts { get; set; }
@@ -28,8 +31,7 @@ public partial class CattoDbContext : DbContext
     public virtual DbSet<Post> Posts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\apic\\cattoapi_Copy\\cattoapi_DB\\cattoDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True");
+        => optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:default"]);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
