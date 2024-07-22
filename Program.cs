@@ -21,12 +21,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
+using SignalRChatApp.Hubs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //JWT AUTH
+builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,6 +49,26 @@ builder.Services.AddAuthentication(options =>
 
     options.Events = new JwtBearerEvents
     {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            // If the request is for our hub...
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/chatHub")))
+            {
+                // Read the token out of the query string
+                
+                context.Request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            }
+            return Task.CompletedTask;
+        },
+
+
+
+
+
         OnTokenValidated = async context =>
         {
             var authHeader =  context.HttpContext.Request.Headers["Authorization"].ToString();
@@ -101,14 +124,25 @@ builder.Services.AddAuthentication(options =>
 
 
 });
-
-
+//delete later
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder =>
+        {
+            builder.WithOrigins("http://127.0.0.1:5500")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials(); // Allow credentials (cookies, authorization headers, etc.)
+        });
+});
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<PasswordService>();
 
+builder.Services.AddScoped<TokensRepo>();
 builder.Services.AddScoped<IBlackListTokensRepo, BlackListTokensRepo>();
 builder.Services.AddScoped<IEmailServicesRepo, EmailServicesRepo>();
 builder.Services.AddScoped<ILikesRepo, LikesRepo>();
@@ -118,6 +152,7 @@ builder.Services.AddScoped<IUserOperationsRepo, UserOperationsRepo>();
 builder.Services.AddScoped<IAdminOperationsRepo, AdminOperationsRepo>();
 builder.Services.AddScoped<IAccountRepo, Accountrepo>();
 builder.Services.AddScoped<IAuthOperationsRepo, AuthOperationsRepo>();
+builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen((s =>
@@ -169,13 +204,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseIpRateLimiting();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

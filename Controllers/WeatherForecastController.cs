@@ -2,6 +2,8 @@ using cattoapi.CustomResponse;
 using cattoapi.DTOS;
 using cattoapi.Interfaces.BlackListTokens;
 using cattoapi.Interfaces.EmailServices;
+using cattoapi.Repos;
+using cattoapi.utlities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -13,26 +15,18 @@ namespace cattoapi.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly TokensRepo _tokensRepo;
 
-        private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IBlackListTokensRepo _blackListTokensRepo;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger,IBlackListTokensRepo blackListTokensRepo)
+        public WeatherForecastController(TokensRepo tokensRepo)
         {
-            _logger = logger;
-            _blackListTokensRepo = blackListTokensRepo;
+            _tokensRepo = tokensRepo;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         
-        public async Task<IActionResult> Test()
+        public async Task<IActionResult> Test([FromQuery] string token)
         {
-        
-            return Ok();
+            return Ok(await _tokensRepo.IsTokenValid(token));
         }
     }
 }

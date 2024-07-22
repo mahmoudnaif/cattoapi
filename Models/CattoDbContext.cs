@@ -19,13 +19,17 @@ public partial class CattoDbContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
 
+    public virtual DbSet<Conversation> Conversations { get; set; }
+
     public virtual DbSet<LikedPost> LikedPosts { get; set; }
+
+    public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<Post> Posts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\apic\\cattoapi\\cattoapi_DB\\cattoDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True");
+        => optionsBuilder.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\apic\\cattoapi_Copy\\cattoapi_DB\\cattoDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,6 +83,27 @@ public partial class CattoDbContext : DbContext
                 .HasConstraintName("FK_comments_postID");
         });
 
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasKey(e => new { e.Participant1Id, e.Participant2Id }).HasName("PK__Conversa__7C56DCBB4DB7F8AC");
+
+            entity.Property(e => e.Participant1Id).HasColumnName("Participant1ID");
+            entity.Property(e => e.Participant2Id).HasColumnName("Participant2ID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Participant1).WithMany(p => p.ConversationParticipant1s)
+                .HasForeignKey(d => d.Participant1Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Conversat__Parti__2DE6D218");
+
+            entity.HasOne(d => d.Participant2).WithMany(p => p.ConversationParticipant2s)
+                .HasForeignKey(d => d.Participant2Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Conversat__Parti__2EDAF651");
+        });
+
         modelBuilder.Entity<LikedPost>(entity =>
         {
             entity.HasKey(e => new { e.AccountId, e.PostId }).HasName("PK__Likedpos__4FB7E205A8DF8E01");
@@ -100,6 +125,25 @@ public partial class CattoDbContext : DbContext
                 .HasConstraintName("FK_likedposts_postID");
         });
 
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.Property(e => e.Content).HasColumnType("text");
+            entity.Property(e => e.Participant1Id).HasColumnName("Participant1ID");
+            entity.Property(e => e.Participant2Id).HasColumnName("Participant2ID");
+            entity.Property(e => e.SenderId).HasColumnName("SenderID");
+            entity.Property(e => e.Timestamp)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.SenderId)
+                .HasConstraintName("FK__Messages__Sender__40F9A68C");
+
+            entity.HasOne(d => d.Conversation).WithMany(p => p.Messages)
+                .HasForeignKey(d => new { d.Participant1Id, d.Participant2Id })
+                .HasConstraintName("FK__Messages__40058253");
+        });
+
         modelBuilder.Entity<Post>(entity =>
         {
             entity.HasKey(e => e.PostId).HasName("PK__posts__DD0C73BAC72F2DD8");
@@ -112,11 +156,9 @@ public partial class CattoDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("dateCreated");
             entity.Property(e => e.LikesCount).HasColumnName("likesCount");
-            entity.Property(e => e.PostPictrue)
-                .HasMaxLength(255)
-                .HasColumnName("postPictrue");
+            entity.Property(e => e.PostPictrue).HasColumnName("postPictrue");
             entity.Property(e => e.PostText)
-                .HasMaxLength(255)
+                .HasMaxLength(500)
                 .HasColumnName("postText");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Posts)

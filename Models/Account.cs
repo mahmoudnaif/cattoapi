@@ -23,7 +23,13 @@ public partial class Account
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+    public virtual ICollection<Conversation> ConversationParticipant1s { get; set; } = new List<Conversation>();
+
+    public virtual ICollection<Conversation> ConversationParticipant2s { get; set; } = new List<Conversation>();
+
     public virtual ICollection<LikedPost> LikedPosts { get; set; } = new List<LikedPost>();
+
+    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 }

@@ -128,6 +128,38 @@ namespace cattoapi.utlities
             return true;
         }
 
+       /* public static bool IsTokenValid(string token)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
+                    ValidAudience = _configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]))
+                };
+
+                SecurityToken validatedToken;
+                ClaimsPrincipal principal = handler.ValidateToken(token, validationParameters, out validatedToken);
+
+               
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }*/
+
+
+
+
         public static async Task<byte[]> ConvertToByteArray(IFormFile file)
         {
             if (file == null)

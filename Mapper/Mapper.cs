@@ -9,16 +9,12 @@
     {
         public MappingProfile()
         {
-         
-
-
-
             CreateMap<Account, AccountDTO> ();
             CreateMap<Post, PostDTO> ();
             CreateMap<Account, ProfileDTO> ();
             CreateMap<Comment, CommentDTO> ();
-
-            CreateMap<Comment, CommentDTO>();
+            CreateMap<Conversation, ConversationDTO>();
+            CreateMap<Message, MessageDTO>();
         }
     }
 
